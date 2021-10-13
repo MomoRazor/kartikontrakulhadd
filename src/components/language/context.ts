@@ -8,6 +8,8 @@ export interface ILanguageContextConfig {
 
 export interface ILanguageContext extends ILanguageContextConfig {}
 
-export const defaultLanguageContext: ILanguageContext = {};
+export const defaultLanguageContext: ILanguageContext = {
+    selectedLanguage: Languages.MT
+};
 
 export const LanguageContext = createContext<ILanguageContext>(defaultLanguageContext);

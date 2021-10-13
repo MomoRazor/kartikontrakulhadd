@@ -1,13 +1,10 @@
-import { Fonts, FullPage, LanguageProvider, Typography } from './components';
-import { primaryColor } from './config';
+import { LanguageProvider } from './components';
 import './css/fullPage.css';
+import { Home } from './pages';
 
 const App = () => (
     <LanguageProvider>
-        <Fonts />
-        <FullPage backgroundColor={primaryColor}>
-            <Typography englishText="Hi" malteseText="Aw" />
-        </FullPage>
+        <Home />
     </LanguageProvider>
 );
 

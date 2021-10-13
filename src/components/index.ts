@@ -2,3 +2,8 @@ export * from './FullPage';
 export * from './Fonts';
 export * from './Typography';
 export * from './language';
+export * from './TopBar';
+export * from './FlexImage';
+export * from './Content';
+export * from './Form';
+export * from './Spacer';

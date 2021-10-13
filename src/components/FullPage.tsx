@@ -10,9 +10,12 @@ export interface IStyledDiv {
 }
 
 const StyledDiv = styled.div<IStyledDiv>`
+    display: flex;
     width: 100vw;
     height: 100vh;
     background-color: ${({ backgroundColor }) => backgroundColor};
+    justify-content: center;
+    box-sizing: border-box;
 `;
 
 export const FullPage = (props: IFullPage) => (
