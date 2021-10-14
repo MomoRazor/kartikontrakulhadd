@@ -12,14 +12,17 @@ interface IP {
     underline?: boolean;
     margin?: string;
     padding?: string;
+    fontSize?: string;
+    color?: string;
 }
 
 const StyledP = styled.p<IP>`
     margin: 0;
     padding: 0;
     display: flex;
-    color: white;
+    color: ${({ color }) => (color ? color : 'white')};
     font-family: 'Crete Round', serif;
+    font-size: ${({ fontSize }) => (fontSize ? fontSize : '')};
     margin: ${({ margin }) => margin || 0};
     padding: ${({ padding }) => padding || 0};
     text-decoration: ${({ underline }) => (underline ? 'underline' : 'none')};

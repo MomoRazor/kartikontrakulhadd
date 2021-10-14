@@ -13,11 +13,11 @@ interface IBaseDiv {
 const BaseDiv = styled.div<IBaseDiv>`
     display: flex;
     flex-direction: ${({ mobile }) => (mobile ? 'column' : 'row')};
-    width: ${({ mobile }) => (mobile ? '100%' : '80%')};
+    width: 100%;
     height: calc(100% - 100);
-    padding: 100px 20px 0 20px;
+    padding: 120px 20px 0 20px;
+    align-items: ${({ mobile }) => (mobile ? 'center' : '')};
     box-sizing: border-box;
-    align-items: center;
 `;
 
 export const Content = (props: IContent) => {

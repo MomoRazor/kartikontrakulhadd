@@ -11,11 +11,12 @@ export interface IStyledDiv {
 
 const StyledDiv = styled.div<IStyledDiv>`
     display: flex;
-    width: 100vw;
-    height: 100vh;
+    min-width: 100vw;
+    min-height: 100vh;
     background-color: ${({ backgroundColor }) => backgroundColor};
     justify-content: center;
     box-sizing: border-box;
+    overflow-x: none;
 `;
 
 export const FullPage = (props: IFullPage) => (

@@ -7,3 +7,7 @@ export * from './FlexImage';
 export * from './Content';
 export * from './Form';
 export * from './Spacer';
+export * from './Hr';
+export * from './Button';
+export * from './Checkbox';
+export * from './Input';

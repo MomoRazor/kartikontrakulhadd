@@ -2,22 +2,25 @@ import { useContext, useEffect, useState } from 'react';
 import { useResize } from '../hooks';
 import {
     LanguageContext,
-    // Languages,
     Fonts,
     FullPage,
     TopBar,
     Content,
     FlexImage,
     Form,
-    Spacer
+    Languages
 } from '../components';
 import { primaryColor } from '../config';
-// import MobileImageMT from '../assets/mob-mt.png';
-// import MobileImageEN from '../assets/mob-en.png';
-// import DeskImageMT from '../assets/desk-mt.png';
-// import DeskImageEN from '../assets/desk-en.png';
-import DeskImage from '../assets/desk.png';
-import MobileImage from '../assets/mob.png';
+import Image from '../assets/nolabels.png';
+import styled from 'styled-components';
+import MalteseImage from '../assets/mt.png';
+import EnglishImage from '../assets/en.png';
+
+const StyledColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
 
 export const Home = () => {
     const mobile = useResize();
@@ -26,20 +29,10 @@ export const Home = () => {
     const [imageSrc, setImageSrc] = useState('');
 
     useEffect(() => {
-        if (mobile) {
-            setImageSrc(MobileImage);
-            // if (selectedLanguage === Languages.EN) {
-            //     setImageSrc(MobileImageEN);
-            // } else if (selectedLanguage === Languages.MT) {
-            //     setImageSrc(MobileImageMT);
-            // }
-        } else {
-            setImageSrc(DeskImage);
-            // if (selectedLanguage === Languages.EN) {
-            //     setImageSrc(DeskImageEN);
-            // } else if (selectedLanguage === Languages.MT) {
-            //     setImageSrc(DeskImageMT);
-            // }
+        if (selectedLanguage === Languages.EN) {
+            setImageSrc(EnglishImage);
+        } else if (selectedLanguage === Languages.MT) {
+            setImageSrc(MalteseImage);
         }
     }, [mobile, selectedLanguage]);
 
@@ -49,13 +42,20 @@ export const Home = () => {
             <FullPage backgroundColor={primaryColor}>
                 <TopBar />
                 <Content>
-                    <FlexImage
-                        src={imageSrc}
-                        width={mobile ? '80%' : '75%'}
-                        maxWidth="800px"
-                        alt="Main Image"
-                    />
-                    <Spacer width="50px" />
+                    <StyledColumn>
+                        <FlexImage src={Image} width="65vw" minWidth="600px" alt="Main Image">
+                            <FlexImage
+                                src={imageSrc}
+                                width="35%"
+                                minWidth="280px"
+                                maxWidth="380px"
+                                alt="Labels"
+                                position="absolute"
+                                margin={mobile ? '0 0 0 30px' : '0 0 0 50px'}
+                                top={mobile ? '48%' : '53%'}
+                            />
+                        </FlexImage>
+                    </StyledColumn>
                     <Form />
                 </Content>
             </FullPage>

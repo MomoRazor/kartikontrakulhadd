@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { FlexImage } from './FlexImage';
 import Logo from '../assets/logo.png';
 import { LanguageSelector } from './language';
+import { Hr } from './Hr';
+import { primaryColor } from '../config';
 
 const StyledContainer = styled.div`
     display: flex;
@@ -11,6 +13,8 @@ const StyledContainer = styled.div`
     top: 0;
     padding: 20px 20px 0 20px;
     box-sizing: border-box;
+    z-index: 5;
+    background-color: ${primaryColor};
 `;
 
 const StyledTopbar = styled.div`
@@ -21,18 +25,12 @@ const StyledTopbar = styled.div`
     width: 100%;
 `;
 
-const StyledHr = styled.hr`
-    display: flex;
-    border-color: rgba(255, 255, 255, 0.2);
-    width: 100%;
-`;
-
 export const TopBar = () => (
     <StyledContainer>
         <StyledTopbar>
             <FlexImage width="75px" src={Logo} alt="Logo" />
             <LanguageSelector />
         </StyledTopbar>
-        <StyledHr />
+        <Hr />
     </StyledContainer>
 );
