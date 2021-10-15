@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { deliveryPrice, pricePerBox } from '../config';
+import { deliveryPrice, pricePerBox, submitOrderEmail, validateEmail } from '../config';
 import { useResize } from '../hooks';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
@@ -115,17 +115,17 @@ export const Form = () => {
         setSubmitted(true);
 
         if (!error) {
-            console.log(
+            submitOrderEmail({
                 name,
                 surname,
                 email,
-                amount,
-                totalPrice(),
+                amount: parseInt(amount),
+                price: parseInt(totalPrice()),
                 delivery,
                 addressLine1,
                 addressLine2,
                 localityCode
-            );
+            });
         }
     };
 
@@ -150,8 +150,18 @@ export const Form = () => {
             error = true;
             setErrorEmail(getErrorMsg());
         } else {
-            //TODO check if Email is valid
-            setErrorEmail('');
+            if (!validateEmail(email)) {
+                error = true;
+                setErrorEmail(
+                    language.selectedLanguage === Languages.EN
+                        ? 'Invalid Email'
+                        : language.selectedLanguage === Languages.MT
+                        ? 'Indirizz Invalidu'
+                        : ''
+                );
+            } else {
+                setErrorEmail('');
+            }
         }
 
         if (amount === '') {
@@ -183,7 +193,17 @@ export const Form = () => {
         }
 
         return error;
-    }, [addressLine1, addressLine2, amount, email, getErrorMsg, localityCode, name, surname]);
+    }, [
+        addressLine1,
+        addressLine2,
+        amount,
+        email,
+        getErrorMsg,
+        language.selectedLanguage,
+        localityCode,
+        name,
+        surname
+    ]);
 
     useEffect(() => {
         if (submitted) {
