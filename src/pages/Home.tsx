@@ -9,8 +9,7 @@ import {
     FlexImage,
     Form,
     Languages,
-    Popup,
-    Typography
+    Popup
 } from '../components';
 import { primaryColor } from '../config';
 import Image from '../assets/nolabels.png';
@@ -42,7 +41,8 @@ export const Home = () => {
     const [imageSrc, setImageSrc] = useState('');
 
     const [paymentPopup, setPaymentPopup] = useState(false);
-    const [thankyouPopup] = useState(false);
+    const [thankyouPopup, setThankyouPopup] = useState(true);
+    const [failedPurchase, setFailedPurchase] = useState(false);
 
     useEffect(() => {
         if (selectedLanguage === Languages.EN) {
@@ -51,6 +51,17 @@ export const Home = () => {
             setImageSrc(MalteseImage);
         }
     }, [mobile, selectedLanguage]);
+
+    const onPopupClose = () => {
+        if (paymentPopup) {
+            setPaymentPopup(false);
+        } else if (thankyouPopup) {
+            //TODO CLEAR ORDER
+            setThankyouPopup(false);
+        } else if (failedPurchase) {
+            setFailedPurchase(false);
+        }
+    };
 
     return (
         <>
@@ -94,20 +105,16 @@ export const Home = () => {
                         setPaymentPopup={setPaymentPopup}
                     />
                 </Content>
-                {paymentPopup ? (
-                    <Popup>
-                        <Typography malteseText="Test" englishText="Test2" />
-                    </Popup>
-                ) : (
-                    <></>
-                )}
-                {thankyouPopup ? (
-                    <Popup>
-                        <></>
-                    </Popup>
-                ) : (
-                    <></>
-                )}
+                <Popup
+                    amount={parseInt(amount)}
+                    delivery={delivery}
+                    purchase={paymentPopup}
+                    thankyou={thankyouPopup}
+                    setThankyou={setThankyouPopup}
+                    failedPurchase={failedPurchase}
+                    setFailedPurchase={setFailedPurchase}
+                    onClose={onPopupClose}
+                />
             </FullPage>
         </>
     );

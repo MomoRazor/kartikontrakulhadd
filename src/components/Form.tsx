@@ -75,7 +75,7 @@ export const Form = (props: IForm) => {
     const language = useContext(LanguageContext);
 
     const [submitted, setSubmitted] = useState(false);
-    const [verified, setVerified] = useState(false);
+    const [verified, setVerified] = useState(process.env.NODE_ENV === 'production' ? false : true);
 
     const [errorName, setErrorName] = useState('');
     const [errorSurname, setErrorSurname] = useState('');
@@ -374,11 +374,15 @@ export const Form = (props: IForm) => {
                 />
                 <Button onClick={submitPayment} englishText="Checkout" malteseText="Ħallas" />
             </StyledRow>
-            <GoogleReCaptcha
-                onVerify={() => {
-                    setVerified(true);
-                }}
-            />
+            {process.env.NODE_ENV === 'production' ? (
+                <GoogleReCaptcha
+                    onVerify={() => {
+                        setVerified(true);
+                    }}
+                />
+            ) : (
+                <></>
+            )}
             <Spacer height="40px" />
         </StyledForm>
     );

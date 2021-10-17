@@ -4,18 +4,26 @@ import { LanguageProvider } from './components';
 import './css/fullPage.css';
 import { Home } from './pages';
 
-const App = () => (
-    <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_KEY as string}>
+const App = () => {
+    const restOfStuff = () => (
         <PayPalScriptProvider
             options={{
-                'client-id': process.env.REACT_APP_SANDBOX_PAYPAL_CLIENT_ID as string
+                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string
             }}
         >
             <LanguageProvider>
                 <Home />
             </LanguageProvider>
         </PayPalScriptProvider>
-    </GoogleReCaptchaProvider>
-);
+    );
+
+    return process.env.NODE_ENV === 'production' ? (
+        <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_KEY as string}>
+            {restOfStuff()}
+        </GoogleReCaptchaProvider>
+    ) : (
+        restOfStuff()
+    );
+};
 
 export default App;

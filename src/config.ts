@@ -5,6 +5,7 @@ const Mailgun = require('mailgun-js')({
     apiKey: process.env.REACT_APP_MAILGUN,
     domain: process.env.REACT_APP_MAILGUN_DOMAIN
 });
+
 export const primaryColor = '#511c1f';
 export const secondaryColor = '#a41e21';
 
@@ -12,9 +13,10 @@ export const pricePerBox = 39.99;
 export const deliveryPrice = 10;
 
 export const fromEmail = 'kartikontrakulhadd@gmail.com';
-export const emailList = ['theo.cachia@gmail.com', 'marieborg279@gmail.com', 'dgurpani@gmail.com'];
-//FOR TESTING
-// export const emailList = ['maurovic.cachia@gmail.com', 'theo.cachia@gmail.com'];
+export const emailList =
+    process.env.NODE_ENV === 'production'
+        ? ['theo.cachia@gmail.com', 'marieborg279@gmail.com', 'dgurpani@gmail.com']
+        : ['maurovic.cachia@gmail.com', 'theo.cachia@gmail.com'];
 
 export const hexToRgb = (hex: string, opacity?: number | string) => {
     if (hex.includes('#')) {
@@ -83,4 +85,30 @@ export const validateEmail = (email: string) => {
     const re =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+};
+
+export const generatePurchaseUnits = (amount: number, delivery: boolean) => {
+    let purchaseUnits: any[] = [];
+
+    for (let i = 0; i < amount; i++) {
+        purchaseUnits.push({
+            reference_id: 'KKKBOX-' + i,
+            description: 'A Box of Karti Kontra Kulħadd',
+            amount: {
+                value: pricePerBox.toFixed(2)
+            }
+        });
+    }
+
+    if (delivery) {
+        purchaseUnits.push({
+            reference_id: 'delivery',
+            description: 'Delivery Service',
+            amount: {
+                value: deliveryPrice.toFixed(2)
+            }
+        });
+    }
+
+    return purchaseUnits;
 };
