@@ -41,7 +41,7 @@ export const Home = () => {
     const [imageSrc, setImageSrc] = useState('');
 
     const [paymentPopup, setPaymentPopup] = useState(false);
-    const [thankyouPopup, setThankyouPopup] = useState(true);
+    const [thankyouPopup, setThankyouPopup] = useState(false);
     const [failedPurchase, setFailedPurchase] = useState(false);
 
     useEffect(() => {
