@@ -14,7 +14,6 @@ const BaseDiv = styled.div<IBaseDiv>`
     display: flex;
     flex-direction: ${({ mobile }) => (mobile ? 'column' : 'row')};
     width: 100%;
-    height: calc(100% - 100);
     padding: 120px 20px 0 20px;
     align-items: ${({ mobile }) => (mobile ? 'center' : '')};
     box-sizing: border-box;

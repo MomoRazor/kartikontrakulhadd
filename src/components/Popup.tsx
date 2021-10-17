@@ -8,13 +8,13 @@ export interface IPopup {
 }
 
 const StyledBackground = styled.div`
-    position: absolute;
+    position: fixed;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 68px);
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 0;
+    top: 68px;
     z-index: 20;
 `;
 
