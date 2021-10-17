@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { GoogleReCaptcha } from 'react-google-recaptcha-v3';
 import styled from 'styled-components';
-import { deliveryPrice, pricePerBox, submitOrderEmail, validateEmail } from '../config';
+import { deliveryPrice, pricePerBox, validateEmail } from '../config';
 import { useResize } from '../hooks';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
@@ -9,6 +10,28 @@ import { Input } from './Input';
 import { LanguageContext, Languages } from './language';
 import { Spacer } from './Spacer';
 import { Typography } from './Typography';
+
+interface IForm {
+    setPaymentPopup: (newBoolean: boolean) => void;
+    name: string;
+    setName: (newString: string) => void;
+    surname: string;
+    setSurname: (newString: string) => void;
+    email: string;
+    setEmail: (newString: string) => void;
+    amount: string;
+    setAmount: (newString: string) => void;
+    delivery: boolean;
+    setDelivery: (newBoolean: boolean) => void;
+    addressLine1: string;
+    setAddressLine1: (newString: string) => void;
+    addressLine2: string;
+    setAddressLine2: (newString: string) => void;
+    localityCode: string;
+    setLocalityCode: (newString: string) => void;
+    price: string;
+    setPrice: (newString: string) => void;
+}
 
 interface IStyledForm {
     mobile: boolean;
@@ -47,110 +70,98 @@ const StyledColumn = styled.div<IStyledColumn>`
     min-width: ${({ minWidth }) => (minWidth ? minWidth : '')};
 `;
 
-export const Form = () => {
+export const Form = (props: IForm) => {
     const mobile = useResize();
     const language = useContext(LanguageContext);
 
     const [submitted, setSubmitted] = useState(false);
+    const [verified, setVerified] = useState(false);
 
-    const [name, setName] = useState('');
     const [errorName, setErrorName] = useState('');
-    const [surname, setSurname] = useState('');
     const [errorSurname, setErrorSurname] = useState('');
-    const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
-    const [amount, setAmount] = useState('');
     const [errorAmount, setErrorAmount] = useState('');
-    const [price, setPrice] = useState('0.00');
-    const [delivery, setDelivery] = useState(true);
-    const [pickup, setPickup] = useState(false);
 
-    const [addressLine1, setAddressLine1] = useState('');
     const [errorAddressLine1, setErrorAddressLine1] = useState('');
-    const [addressLine2, setAddressLine2] = useState('');
     const [errorAddressLine2, setErrorAddressLine2] = useState('');
-    const [localityCode, setLocalityCode] = useState('');
     const [errorLocalityCode, setErrorLocalityCode] = useState('');
 
-    const tickDelivery = (value: boolean) => {
-        setDelivery(value);
-        setPickup(!value);
-    };
-
-    const tickPickup = (value: boolean) => {
-        setDelivery(!value);
-        setPickup(value);
-    };
+    const [generalError, setGeneralError] = useState('');
 
     const totalPrice = () => {
-        if (delivery) {
-            if (price !== '') {
-                let newPrice = parseFloat(price);
+        if (props.delivery) {
+            if (props.price !== '') {
+                let newPrice = parseFloat(props.price);
                 if (newPrice > 0) {
                     return (newPrice + deliveryPrice).toFixed(2);
                 } else {
-                    return price;
+                    return props.price;
                 }
             } else {
                 return '';
             }
         } else {
-            return price;
+            return props.price;
         }
     };
 
-    const getErrorMsg = useCallback(() => {
-        if (language.selectedLanguage === Languages.EN) {
-            return 'Required';
-        } else if (language.selectedLanguage === Languages.MT) {
-            return 'Insejt din';
-        } else {
-            return '';
-        }
-    }, [language.selectedLanguage]);
+    const getErrorMsg = useCallback(
+        (englishText?: string, malteseText?: string) => {
+            if (language.selectedLanguage === Languages.EN) {
+                return englishText || 'Required';
+            } else if (language.selectedLanguage === Languages.MT) {
+                return malteseText || 'Insejt din';
+            } else {
+                return '';
+            }
+        },
+        [language.selectedLanguage]
+    );
 
     const submitPayment = () => {
         let error = validate();
 
         setSubmitted(true);
 
+        if (!verified) {
+            error = true;
+            setGeneralError(
+                getErrorMsg(
+                    'Recaptcha Failed! Try again later',
+                    'Problema bir-Recaptcha! Prova iktar tard!'
+                )
+            );
+        } else {
+            setGeneralError('');
+        }
+
         if (!error) {
-            submitOrderEmail({
-                name,
-                surname,
-                email,
-                amount: parseInt(amount),
-                price: parseInt(totalPrice()),
-                delivery,
-                addressLine1,
-                addressLine2,
-                localityCode
-            });
+            props.setPaymentPopup(true);
         }
     };
 
     const validate = useCallback(() => {
         let error = false;
 
-        if (name === '') {
+        if (props.name === '') {
             error = true;
             setErrorName(getErrorMsg());
         } else {
             setErrorName('');
         }
 
-        if (surname === '') {
+        if (props.surname === '') {
             error = true;
             setErrorSurname(getErrorMsg());
         } else {
             setErrorSurname('');
         }
 
-        if (email === '') {
+        if (props.email === '') {
             error = true;
             setErrorEmail(getErrorMsg());
         } else {
-            if (!validateEmail(email)) {
+            if (!validateEmail(props.email)) {
                 error = true;
                 setErrorEmail(
                     language.selectedLanguage === Languages.EN
@@ -164,28 +175,28 @@ export const Form = () => {
             }
         }
 
-        if (amount === '') {
+        if (props.amount === '') {
             error = true;
             setErrorAmount(getErrorMsg());
         } else {
             setErrorAmount('');
         }
 
-        if (addressLine1 === '') {
+        if (props.addressLine1 === '') {
             error = true;
             setErrorAddressLine1(getErrorMsg());
         } else {
             setErrorAddressLine1('');
         }
 
-        if (addressLine2 === '') {
+        if (props.addressLine2 === '') {
             error = true;
             setErrorAddressLine2(getErrorMsg());
         } else {
-            setErrorAddressLine1('');
+            setErrorAddressLine2('');
         }
 
-        if (localityCode === '') {
+        if (props.localityCode === '') {
             error = true;
             setErrorLocalityCode(getErrorMsg());
         } else {
@@ -194,15 +205,15 @@ export const Form = () => {
 
         return error;
     }, [
-        addressLine1,
-        addressLine2,
-        amount,
-        email,
+        props.addressLine1,
+        props.addressLine2,
+        props.amount,
+        props.email,
         getErrorMsg,
         language.selectedLanguage,
-        localityCode,
-        name,
-        surname
+        props.localityCode,
+        props.name,
+        props.surname
     ]);
 
     useEffect(() => {
@@ -217,22 +228,27 @@ export const Form = () => {
             <Typography fontSize="20px" englishText="What's your name?" malteseText="X'jismek?" />
             <Spacer height="10px" />
             <Input
-                value={name}
-                onChange={setName}
+                value={props.name}
+                onChange={props.setName}
                 placeholderEn="Name"
                 placeholderMt="Isem"
                 error={errorName}
             />
             <Spacer height="10px" />
             <Input
-                value={surname}
-                onChange={setSurname}
+                value={props.surname}
+                onChange={props.setSurname}
                 placeholderEn="Surname"
                 placeholderMt="Kunjom"
                 error={errorSurname}
             />
             <Spacer height="10px" />
-            <Input value={email} onChange={setEmail} placeholder="Email" error={errorEmail} />
+            <Input
+                value={props.email}
+                onChange={props.setEmail}
+                placeholder="Email"
+                error={errorEmail}
+            />
             <Spacer height="10px" />
             <Hr />
             <Spacer height="10px" />
@@ -250,14 +266,14 @@ export const Form = () => {
                         type="number"
                         placeholderEn="69.. nice"
                         placeholderMt="69.. najs"
-                        value={amount}
+                        value={props.amount}
                         width="65px"
                         onChange={(value) => {
-                            setAmount(value);
+                            props.setAmount(value);
                             if (value !== '') {
-                                setPrice((pricePerBox * parseInt(value)).toFixed(2));
+                                props.setPrice((pricePerBox * parseInt(value)).toFixed(2));
                             } else {
-                                setPrice('');
+                                props.setPrice('');
                             }
                         }}
                     />
@@ -268,7 +284,7 @@ export const Form = () => {
             <Spacer height="10px" />
             <StyledRow justifyContent="flex-left">
                 <StyledColumn width="25%" minWidth="50px">
-                    <Checkbox value={delivery} onChange={tickDelivery} />
+                    <Checkbox value={props.delivery} onChange={props.setDelivery} />
                 </StyledColumn>
                 <StyledColumn width="75%">
                     <StyledRow>
@@ -289,7 +305,12 @@ export const Form = () => {
             <Spacer height="20px" />
             <StyledRow justifyContent="flex-left">
                 <StyledColumn width="25%" minWidth="50px">
-                    <Checkbox value={pickup} onChange={tickPickup} />
+                    <Checkbox
+                        value={!props.delivery}
+                        onChange={(value) => {
+                            props.setDelivery(!value);
+                        }}
+                    />
                 </StyledColumn>
                 <StyledColumn width="75%">
                     <StyledRow>
@@ -310,30 +331,30 @@ export const Form = () => {
             <Spacer height="10px" />
             <Hr />
             <Spacer height="10px" />
-            {delivery ? (
+            {props.delivery ? (
                 <>
                     <Typography fontSize="20px" englishText="Address" malteseText="Indirizz" />
                     <Spacer height="10px" />
                     <Input
                         error={errorAddressLine1}
-                        value={addressLine1}
-                        onChange={setAddressLine1}
+                        value={props.addressLine1}
+                        onChange={props.setAddressLine1}
                         placeholderMt="Indirizz 1"
                         placeholderEn="Address line 1"
                     />
                     <Spacer height="10px" />
                     <Input
                         error={errorAddressLine2}
-                        value={addressLine2}
-                        onChange={setAddressLine2}
+                        value={props.addressLine2}
+                        onChange={props.setAddressLine2}
                         placeholderMt="Indirizz 2"
                         placeholderEn="Address line 2"
                     />
                     <Spacer height="10px" />
                     <Input
                         error={errorLocalityCode}
-                        value={localityCode}
-                        onChange={setLocalityCode}
+                        value={props.localityCode}
+                        onChange={props.setLocalityCode}
                         placeholderEn="Locality / Post Code"
                         placeholderMt="Lokalita' / Kodiċi Postali"
                     />
@@ -344,6 +365,7 @@ export const Form = () => {
             ) : (
                 <></>
             )}
+            {generalError ? <Typography color="red">{generalError}</Typography> : <></>}
             <StyledRow>
                 <Typography
                     fontSize="20px"
@@ -352,6 +374,11 @@ export const Form = () => {
                 />
                 <Button onClick={submitPayment} englishText="Checkout" malteseText="Ħallas" />
             </StyledRow>
+            <GoogleReCaptcha
+                onVerify={() => {
+                    setVerified(true);
+                }}
+            />
             <Spacer height="40px" />
         </StyledForm>
     );

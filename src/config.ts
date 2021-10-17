@@ -6,13 +6,15 @@ const Mailgun = require('mailgun-js')({
     domain: process.env.REACT_APP_MAILGUN_DOMAIN
 });
 export const primaryColor = '#511c1f';
+export const secondaryColor = '#a41e21';
 
 export const pricePerBox = 39.99;
 export const deliveryPrice = 10;
 
-export const fromEmail = 'site@kartikontrakulhadd.com';
-// export const emailList = ['theo.cachia@gmail.com', 'marieborg279@gmail.com', 'dgurpani@gmail.com'];
-export const emailList = ['maurovic.cachia@gmail.com'];
+export const fromEmail = 'kartikontrakulhadd@gmail.com';
+export const emailList = ['theo.cachia@gmail.com', 'marieborg279@gmail.com', 'dgurpani@gmail.com'];
+//FOR TESTING
+// export const emailList = ['maurovic.cachia@gmail.com', 'theo.cachia@gmail.com'];
 
 export const hexToRgb = (hex: string, opacity?: number | string) => {
     if (hex.includes('#')) {
@@ -39,32 +41,32 @@ export const hexToRgb = (hex: string, opacity?: number | string) => {
 };
 
 export const submitOrderEmail = (data: OrderData) => {
-    console.log(process.env.REACT_APP_MAILGUN_DOMAIN);
-
     const mailGunData = {
         from: fromEmail,
         to: emailList,
         subject: 'KKK Order ' + moment().format('YYYY-MM-DD HH:mm'),
-        html: `Hi! A new order has just been submitted on KartiKontraKulhadd.com! Here are the details:\n
-         - Name: ${data.name}\n
-         - Surname: ${data.surname}\n
-         - Email: ${data.email}\n
-         - Amount: ${data.amount}\n
-         - Price: €${data.price.toFixed(2)}\n
-         - Delivery: ${data.delivery ? 'Yes' : 'No'}\n
-         ${
-             data.delivery
-                 ? '- Full Address: ' +
-                   data.addressLine1 +
-                   ' ' +
-                   data.addressLine2 +
-                   ' ' +
-                   data.localityCode +
-                   '\n'
-                 : ''
-         }
-         
-        Soo... yeah, get to it!`
+        html: `<p>Hi! </p>
+            <p>A new order has just been submitted on KartiKontraKulħadd.com! Here are the details:</p>
+            <ul>
+                <li>Name: ${data.name}</li>
+                <li>Surname: ${data.surname}</li>
+                <li>Email: ${data.email}</li>
+                <li>Amount: ${data.amount}</li>
+                <li>Delivery: ${data.delivery ? 'Yes' : 'No'}</li>
+                ${
+                    data.delivery
+                        ? '<li>Full Address: ' +
+                          data.addressLine1 +
+                          ' ' +
+                          data.addressLine2 +
+                          ' ' +
+                          data.localityCode +
+                          '</li>'
+                        : ''
+                }
+                <li>Price: €${data.price.toFixed(2)}</li>
+            </ul>
+            <p>Soo... yeah, get to it!</p>`
     };
 
     Mailgun.messages().send(mailGunData, (err: any, body: any) => {

@@ -8,7 +8,9 @@ import {
     Content,
     FlexImage,
     Form,
-    Languages
+    Languages,
+    Popup,
+    Typography
 } from '../components';
 import { primaryColor } from '../config';
 import Image from '../assets/nolabels.png';
@@ -23,10 +25,24 @@ const StyledColumn = styled.div`
 `;
 
 export const Home = () => {
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [amount, setAmount] = useState('');
+    const [price, setPrice] = useState('0.00');
+    const [delivery, setDelivery] = useState(true);
+
+    const [addressLine1, setAddressLine1] = useState('');
+    const [addressLine2, setAddressLine2] = useState('');
+    const [localityCode, setLocalityCode] = useState('');
+
     const mobile = useResize();
     const { selectedLanguage } = useContext(LanguageContext);
 
     const [imageSrc, setImageSrc] = useState('');
+
+    const [paymentPopup, setPaymentPopup] = useState(false);
+    const [thankyouPopup] = useState(false);
 
     useEffect(() => {
         if (selectedLanguage === Languages.EN) {
@@ -56,8 +72,42 @@ export const Home = () => {
                             />
                         </FlexImage>
                     </StyledColumn>
-                    <Form />
+                    <Form
+                        name={name}
+                        setName={setName}
+                        surname={surname}
+                        setSurname={setSurname}
+                        email={email}
+                        setEmail={setEmail}
+                        amount={amount}
+                        setAmount={setAmount}
+                        price={price}
+                        setPrice={setPrice}
+                        delivery={delivery}
+                        setDelivery={setDelivery}
+                        addressLine1={addressLine1}
+                        setAddressLine1={setAddressLine1}
+                        addressLine2={addressLine2}
+                        setAddressLine2={setAddressLine2}
+                        localityCode={localityCode}
+                        setLocalityCode={setLocalityCode}
+                        setPaymentPopup={setPaymentPopup}
+                    />
                 </Content>
+                {paymentPopup ? (
+                    <Popup>
+                        <Typography malteseText="Test" englishText="Test2" />
+                    </Popup>
+                ) : (
+                    <></>
+                )}
+                {thankyouPopup ? (
+                    <Popup>
+                        <></>
+                    </Popup>
+                ) : (
+                    <></>
+                )}
             </FullPage>
         </>
     );
