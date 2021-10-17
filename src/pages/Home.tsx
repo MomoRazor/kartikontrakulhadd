@@ -11,7 +11,7 @@ import {
     Languages,
     Popup
 } from '../components';
-import { primaryColor } from '../config';
+import { primaryColor, submitClientEmail, submitOrderEmail } from '../config';
 import Image from '../assets/nolabels.png';
 import styled from 'styled-components';
 import MalteseImage from '../assets/mt.png';
@@ -44,6 +44,8 @@ export const Home = () => {
     const [thankyouPopup, setThankyouPopup] = useState(false);
     const [failedPurchase, setFailedPurchase] = useState(false);
 
+    const [submitted, setSubmitted] = useState(false);
+
     useEffect(() => {
         if (selectedLanguage === Languages.EN) {
             setImageSrc(EnglishImage);
@@ -56,11 +58,38 @@ export const Home = () => {
         if (paymentPopup) {
             setPaymentPopup(false);
         } else if (thankyouPopup) {
-            //TODO CLEAR ORDER
+            const orderData = {
+                name,
+                surname,
+                email,
+                amount: parseInt(amount),
+                price: parseFloat(price),
+                delivery,
+                addressLine1,
+                addressLine2,
+                localityCode
+            };
+
+            clearOrder();
+            submitOrderEmail(orderData);
+            submitClientEmail(orderData);
             setThankyouPopup(false);
         } else if (failedPurchase) {
             setFailedPurchase(false);
         }
+    };
+
+    const clearOrder = () => {
+        setSubmitted(false);
+        setName('');
+        setSurname('');
+        setEmail('');
+        setAmount('');
+        setDelivery(true);
+        setAddressLine1('');
+        setAddressLine2('');
+        setLocalityCode('');
+        setPrice('0.00');
     };
 
     return (
@@ -84,6 +113,8 @@ export const Home = () => {
                         </FlexImage>
                     </StyledColumn>
                     <Form
+                        submitted={submitted}
+                        setSubmitted={setSubmitted}
                         name={name}
                         setName={setName}
                         surname={surname}

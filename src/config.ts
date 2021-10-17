@@ -112,3 +112,44 @@ export const generatePurchaseUnits = (amount: number, delivery: boolean) => {
 
     return purchaseUnits;
 };
+
+export const submitClientEmail = (data: OrderData) => {
+    const mailGunData = {
+        from: fromEmail,
+        to: emailList,
+        subject: 'Karti Kontra Kulħadd Order received!',
+        html: `<p>Hi ${data.name} ${data.surname}! </p>
+            <p>We'd like to confirm that we have received your order on KartiKontraKulħadd.com! Here are the details:</p>
+            <ul>
+                <li>Name: ${data.name}</li>
+                <li>Surname: ${data.surname}</li>
+                <li>Email: ${data.email}</li>
+                <li>Amount: ${data.amount}</li>
+                <li>Delivery: ${data.delivery ? 'Yes' : 'No'}</li>
+                ${
+                    data.delivery
+                        ? '<li>Full Address: ' +
+                          data.addressLine1 +
+                          ' ' +
+                          data.addressLine2 +
+                          ' ' +
+                          data.localityCode +
+                          '</li>'
+                        : ''
+                }
+                <li>Price: €${data.price.toFixed(2)}</li>
+            </ul>
+            <p>We will be in touch with you soon to coordinate your ${
+                data.delivery ? 'delivery' : 'pickup'
+            }!</p>`
+    };
+
+    Mailgun.messages().send(mailGunData, (err: any, body: any) => {
+        if (err) {
+            console.error('Got an error: ', err);
+        } else {
+            return body;
+        }
+        return;
+    });
+};

@@ -31,6 +31,8 @@ interface IForm {
     setLocalityCode: (newString: string) => void;
     price: string;
     setPrice: (newString: string) => void;
+    submitted: boolean;
+    setSubmitted: (newBoolean: boolean) => void;
 }
 
 interface IStyledForm {
@@ -74,7 +76,6 @@ export const Form = (props: IForm) => {
     const mobile = useResize();
     const language = useContext(LanguageContext);
 
-    const [submitted, setSubmitted] = useState(false);
     const [verified, setVerified] = useState(process.env.NODE_ENV === 'production' ? false : true);
 
     const [errorName, setErrorName] = useState('');
@@ -121,7 +122,7 @@ export const Form = (props: IForm) => {
     const submitPayment = () => {
         let error = validate();
 
-        setSubmitted(true);
+        props.setSubmitted(true);
 
         if (!verified) {
             error = true;
@@ -182,45 +183,61 @@ export const Form = (props: IForm) => {
             setErrorAmount('');
         }
 
-        if (props.addressLine1 === '') {
-            error = true;
-            setErrorAddressLine1(getErrorMsg());
-        } else {
-            setErrorAddressLine1('');
-        }
+        if (props.delivery) {
+            if (props.addressLine1 === '') {
+                error = true;
+                setErrorAddressLine1(getErrorMsg());
+            } else {
+                setErrorAddressLine1('');
+            }
 
-        if (props.addressLine2 === '') {
-            error = true;
-            setErrorAddressLine2(getErrorMsg());
-        } else {
-            setErrorAddressLine2('');
-        }
+            if (props.addressLine2 === '') {
+                error = true;
+                setErrorAddressLine2(getErrorMsg());
+            } else {
+                setErrorAddressLine2('');
+            }
 
-        if (props.localityCode === '') {
-            error = true;
-            setErrorLocalityCode(getErrorMsg());
-        } else {
-            setErrorLocalityCode('');
+            if (props.localityCode === '') {
+                error = true;
+                setErrorLocalityCode(getErrorMsg());
+            } else {
+                setErrorLocalityCode('');
+            }
         }
 
         return error;
     }, [
+        props.name,
+        props.surname,
+        props.email,
+        props.amount,
+        props.delivery,
         props.addressLine1,
         props.addressLine2,
-        props.amount,
-        props.email,
-        getErrorMsg,
-        language.selectedLanguage,
         props.localityCode,
-        props.name,
-        props.surname
+        getErrorMsg,
+        language.selectedLanguage
     ]);
 
     useEffect(() => {
-        if (submitted) {
+        if (props.submitted) {
             validate();
+        } else {
+            clearErrors();
         }
-    }, [validate, submitted]);
+    }, [validate, props.submitted]);
+
+    const clearErrors = () => {
+        setErrorName('');
+        setErrorSurname('');
+        setErrorEmail('');
+        setErrorAmount('');
+
+        setErrorAddressLine1('');
+        setErrorAddressLine2('');
+        setErrorLocalityCode('');
+    };
 
     return (
         <StyledForm mobile={mobile}>
@@ -264,8 +281,8 @@ export const Form = (props: IForm) => {
                     <Input
                         error={errorAmount}
                         type="number"
-                        placeholderEn="69.. nice"
-                        placeholderMt="69.. najs"
+                        placeholderEn="69..."
+                        placeholderMt="69..."
                         value={props.amount}
                         width="65px"
                         onChange={(value) => {
@@ -296,8 +313,8 @@ export const Form = (props: IForm) => {
                     </StyledRow>
                     <StyledRow>
                         <Typography
-                            malteseText="(Ikun għandek ftit jiem oħra, nużaw is-servizz tal-Maltapost)"
-                            englishText="(Should arrive in a matter of days. We use the Maltapost services)"
+                            malteseText="(Ikun għandek ftit jiem oħra.)"
+                            englishText="(Should arrive in a matter of days.)"
                         />
                     </StyledRow>
                 </StyledColumn>
@@ -322,8 +339,8 @@ export const Form = (props: IForm) => {
                     </StyledRow>
                     <StyledRow>
                         <Typography
-                            malteseText="(Segwi il-midja soċjali tagħna biex tkun taf meta tista tiġi għalih. Jista' jkun għada, jista jkun ix-xahar id-dieħel)"
-                            englishText="(Follow our social media profiles for the next available pickup date, could be tomorrow, could be next month)"
+                            malteseText="(Segwi il-midja soċjali tagħna biex tkun taf meta u fejn tista tiġi għalih. Jista' jkun għada, jista jkun ix-xahar id-dieħel)"
+                            englishText="(Follow our social media profiles for the next pickup date and location. Could be tomorrow, could be next month)"
                         />
                     </StyledRow>
                 </StyledColumn>
@@ -339,7 +356,7 @@ export const Form = (props: IForm) => {
                         error={errorAddressLine1}
                         value={props.addressLine1}
                         onChange={props.setAddressLine1}
-                        placeholderMt="Indirizz 1"
+                        placeholderMt="L-ewwel linja tal-indirizz"
                         placeholderEn="Address line 1"
                     />
                     <Spacer height="10px" />
@@ -347,7 +364,7 @@ export const Form = (props: IForm) => {
                         error={errorAddressLine2}
                         value={props.addressLine2}
                         onChange={props.setAddressLine2}
-                        placeholderMt="Indirizz 2"
+                        placeholderMt="It-tieni linja tal-Indirizz"
                         placeholderEn="Address line 2"
                     />
                     <Spacer height="10px" />
