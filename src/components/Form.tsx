@@ -5,9 +5,11 @@ import { deliveryPrice, pricePerBox, validateEmail } from '../config';
 import { useResize } from '../hooks';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
+import { Column } from './Column';
 import { Hr } from './Hr';
 import { Input } from './Input';
 import { LanguageContext, Languages } from './language';
+import { Row } from './Row';
 import { Spacer } from './Spacer';
 import { Typography } from './Typography';
 
@@ -45,31 +47,6 @@ const StyledForm = styled.div<IStyledForm>`
     flex-direction: column;
     width: ${({ mobile }) => (mobile ? '80%' : '25%')};
     z-index: 4;
-`;
-
-interface IStyledRow {
-    justifyContent?: string;
-}
-
-const StyledRow = styled.div<IStyledRow>`
-    display: flex;
-    flex-direction: row;
-    justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : 'space-between')};
-    align-items: center;
-    width: 100%;
-`;
-
-interface IStyledColumn {
-    width?: string;
-    minWidth?: string;
-}
-
-const StyledColumn = styled.div<IStyledColumn>`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: ${({ width }) => (width ? width : '50%')};
-    min-width: ${({ minWidth }) => (minWidth ? minWidth : '')};
 `;
 
 export const Form = (props: IForm) => {
@@ -269,15 +246,15 @@ export const Form = (props: IForm) => {
             <Spacer height="10px" />
             <Hr />
             <Spacer height="10px" />
-            <StyledRow>
-                <StyledColumn width="75%">
+            <Row justifyContent="space-between">
+                <Column width="75%"  >
                     <Typography
                         fontSize="20px"
                         englishText="How many boxes in your order?"
                         malteseText="Kemm trid kaxxi fl-ordni tiegħek?"
                     />
-                </StyledColumn>
-                <StyledColumn width="auto">
+                </Column>
+                <Column width="auto">
                     <Input
                         error={errorAmount}
                         type="number"
@@ -294,57 +271,57 @@ export const Form = (props: IForm) => {
                             }
                         }}
                     />
-                </StyledColumn>
-            </StyledRow>
+                </Column>
+            </Row>
             <Spacer height="10px" />
             <Hr />
             <Spacer height="10px" />
-            <StyledRow justifyContent="flex-left">
-                <StyledColumn width="25%" minWidth="50px">
+            <Row justifyContent="flex-left">
+                <Column width="25%" minWidth="50px">
                     <Checkbox value={props.delivery} onChange={props.setDelivery} />
-                </StyledColumn>
-                <StyledColumn width="75%">
-                    <StyledRow>
+                </Column>
+                <Column width="75%">
+                    <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
                             malteseText="Inwassluwulek? (+€10)"
                             englishText="Delivery? (+€10)"
                         />
-                    </StyledRow>
-                    <StyledRow>
+                    </Row>
+                    <Row justifyContent="space-between">
                         <Typography
                             malteseText="(Ikun għandek ftit jiem oħra.)"
                             englishText="(Should arrive in a matter of days.)"
                         />
-                    </StyledRow>
-                </StyledColumn>
-            </StyledRow>
+                    </Row>
+                </Column>
+            </Row>
             <Spacer height="20px" />
-            <StyledRow justifyContent="flex-left">
-                <StyledColumn width="25%" minWidth="50px">
+            <Row justifyContent="flex-left">
+                <Column width="25%" minWidth="50px">
                     <Checkbox
                         value={!props.delivery}
                         onChange={(value) => {
                             props.setDelivery(!value);
                         }}
                     />
-                </StyledColumn>
-                <StyledColumn width="75%">
-                    <StyledRow>
+                </Column>
+                <Column width="75%">
+                    <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
                             malteseText="Tinżel għalih?"
                             englishText="Pickup?"
                         />
-                    </StyledRow>
-                    <StyledRow>
+                    </Row>
+                    <Row justifyContent="space-between">
                         <Typography
                             malteseText="(Segwi il-midja soċjali tagħna biex tkun taf meta u fejn tista tiġi għalih. Jista' jkun għada, jista jkun ix-xahar id-dieħel)"
                             englishText="(Follow our social media profiles for the next pickup date and location. Could be tomorrow, could be next month)"
                         />
-                    </StyledRow>
-                </StyledColumn>
-            </StyledRow>
+                    </Row>
+                </Column>
+            </Row>
             <Spacer height="10px" />
             <Hr />
             <Spacer height="10px" />
@@ -383,14 +360,14 @@ export const Form = (props: IForm) => {
                 <></>
             )}
             {generalError ? <Typography color="red">{generalError}</Typography> : <></>}
-            <StyledRow>
+            <Row justifyContent="space-between">
                 <Typography
                     fontSize="20px"
                     englishText={'Total price: €' + totalPrice()}
                     malteseText={'Ħsara totali: €' + totalPrice()}
                 />
                 <Button onClick={submitPayment} englishText="Checkout" malteseText="Ħallas" />
-            </StyledRow>
+            </Row>
             {process.env.NODE_ENV === 'production' ? (
                 <GoogleReCaptcha
                     onVerify={() => {

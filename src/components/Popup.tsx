@@ -6,6 +6,11 @@ import { FlexImage } from './FlexImage';
 import { Spacer } from './Spacer';
 import { Typography } from './Typography';
 import TitlePNG from '../assets/title.png';
+import { Hr } from './Hr';
+import { Button } from './Button';
+import { useState } from 'react';
+import { Column } from './Column';
+import { Row } from './Row';
 
 export interface IPopup {
     amount: number;
@@ -17,25 +22,6 @@ export interface IPopup {
     setFailedPurchase: (newBoolean: boolean) => void;
     onClose: () => void;
 }
-
-interface IStyledColumn {
-    width?: string;
-}
-
-const StyledColumn = styled.div<IStyledColumn>`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    width: ${({ width }) => (width ? width : '')};
-`;
-
-const StyledRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-`;
 
 const StyledPayPalButtons = styled(PayPalButtons)`
     display: flex;
@@ -77,6 +63,8 @@ const StyledDiv = styled.div<IStyledDiv>`
 export const Popup = (props: IPopup) => {
     const mobile = useResize();
 
+    const [creditCardForm, setCreditCardForm] = useState(false)
+
     return props.failedPurchase || props.purchase || props.thankyou ? (
         <StyledBackground onClick={props.onClose}>
             <StyledDiv
@@ -86,7 +74,7 @@ export const Popup = (props: IPopup) => {
                 {props.purchase ? (
                     <>
                         <StyledPayPalButtons
-                            style={{ shape: 'pill', color: 'white' }}
+                            style={{ shape: 'pill', color: 'white', layout: 'horizontal' }}
                             createOrder={(_, actions) => {
                                 return actions.order.create({
                                     purchase_units: generatePurchaseUnits(
@@ -107,12 +95,32 @@ export const Popup = (props: IPopup) => {
                                 }
                             }}
                         />
+                        <Row justifyContent="space-around">
+                            <Column width="40%">
+                                <Hr/>
+                            </Column>
+                            <Column width="40%">
+                                <Typography>OR</Typography>
+                            </Column>
+                            <Column width="40%">
+                                <Hr/>
+                            </Column>
+                        </Row>
+                        {
+                            !creditCardForm ? (
+                                <Button onClick={() => {
+                                    setCreditCardForm(true)
+                                }} englishText="Pay with Credit Card" malteseText="Hallas b'Credit Card" />
+                            ) : (
+                                <></>
+                            )
+                        }
                     </>
                 ) : props.thankyou ? (
                     <>
                         <Spacer height="40px" />
-                        <StyledRow>
-                            <StyledColumn>
+                        <Row justifyContent="space-around"> 
+                            <Column width="50%">
                                 <Typography
                                     textAlign="end"
                                     fontSize="23px"
@@ -131,9 +139,9 @@ export const Popup = (props: IPopup) => {
                                     malteseText="Grazzi ħafna ❤"
                                     englishText="Thanks a lot ❤"
                                 />
-                            </StyledColumn>
+                            </Column>
                             <FlexImage alt="Title" src={TitlePNG} width="30%" padding="20px" />
-                        </StyledRow>
+                        </Row>
                         <Spacer height="40px" />
                     </>
                 ) : props.failedPurchase ? (

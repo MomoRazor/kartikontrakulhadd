@@ -9,19 +9,13 @@ import {
     FlexImage,
     Form,
     Languages,
-    Popup
+    Popup,
+    Column
 } from '../components';
 import { primaryColor, submitClientEmail, submitOrderEmail } from '../config';
 import Image from '../assets/nolabels.png';
-import styled from 'styled-components';
 import MalteseImage from '../assets/mt.png';
 import EnglishImage from '../assets/en.png';
-
-const StyledColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
 
 export const Home = () => {
     const [name, setName] = useState('');
@@ -98,7 +92,7 @@ export const Home = () => {
             <FullPage backgroundColor={primaryColor}>
                 <TopBar />
                 <Content>
-                    <StyledColumn>
+                    <Column >
                         <FlexImage src={Image} width="65vw" minWidth="600px" alt="Main Image">
                             <FlexImage
                                 src={imageSrc}
@@ -111,7 +105,7 @@ export const Home = () => {
                                 top={mobile ? '48%' : '53%'}
                             />
                         </FlexImage>
-                    </StyledColumn>
+                    </Column>
                     <Form
                         submitted={submitted}
                         setSubmitted={setSubmitted}

@@ -12,3 +12,5 @@ export * from './Button';
 export * from './Checkbox';
 export * from './Input';
 export * from './Popup';
+export * from './Column';
+export * from './Row';
