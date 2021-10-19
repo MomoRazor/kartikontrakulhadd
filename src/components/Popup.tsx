@@ -7,8 +7,6 @@ import { Spacer } from './Spacer';
 import { Typography } from './Typography';
 import TitlePNG from '../assets/title.png';
 import { Hr } from './Hr';
-import { Button } from './Button';
-import { useState } from 'react';
 import { Column } from './Column';
 import { Row } from './Row';
 
@@ -25,7 +23,6 @@ export interface IPopup {
 
 const StyledPayPalButtons = styled(PayPalButtons)`
     display: flex;
-    max-height: 70vh;
 `;
 
 const StyledBackground = styled.div`
@@ -63,18 +60,23 @@ const StyledDiv = styled.div<IStyledDiv>`
 export const Popup = (props: IPopup) => {
     const mobile = useResize();
 
-    const [creditCardForm, setCreditCardForm] = useState(false)
-
     return props.failedPurchase || props.purchase || props.thankyou ? (
         <StyledBackground onClick={props.onClose}>
             <StyledDiv
                 width={mobile ? '80%' : '40%'}
-                backgroundColor={props.purchase ? 'white' : undefined}
+                // backgroundColor={props.purchase ? 'white' : undefined}
+                onClick={(e) => e.stopPropagation()}
             >
                 {props.purchase ? (
                     <>
                         <StyledPayPalButtons
-                            style={{ shape: 'pill', color: 'white', layout: 'horizontal' }}
+                            style={{
+                                shape: 'pill',
+                                color: 'white',
+                                layout: 'horizontal',
+                                height: 37,
+                                tagline: false
+                            }}
                             createOrder={(_, actions) => {
                                 return actions.order.create({
                                     purchase_units: generatePurchaseUnits(
@@ -95,31 +97,30 @@ export const Popup = (props: IPopup) => {
                                 }
                             }}
                         />
+                        <Spacer />
                         <Row justifyContent="space-around">
                             <Column width="40%">
-                                <Hr/>
+                                {/* <Hr color={primaryColor} /> */}
+                                <Hr />
+                            </Column>
+                            <Column width="40%" justifyContent="center" alignItems="center">
+                                <Typography
+                                    // color={primaryColor}
+                                    englishText="OR"
+                                    malteseText="JEW"
+                                />
                             </Column>
                             <Column width="40%">
-                                <Typography>OR</Typography>
-                            </Column>
-                            <Column width="40%">
-                                <Hr/>
+                                <Hr />
+                                {/* <Hr color={primaryColor} /> */}
                             </Column>
                         </Row>
-                        {
-                            !creditCardForm ? (
-                                <Button onClick={() => {
-                                    setCreditCardForm(true)
-                                }} englishText="Pay with Credit Card" malteseText="Hallas b'Credit Card" />
-                            ) : (
-                                <></>
-                            )
-                        }
+                        <Spacer />
                     </>
                 ) : props.thankyou ? (
                     <>
                         <Spacer height="40px" />
-                        <Row justifyContent="space-around"> 
+                        <Row justifyContent="space-around">
                             <Column width="50%">
                                 <Typography
                                     textAlign="end"
