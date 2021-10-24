@@ -51,7 +51,6 @@ export const Home = () => {
     const onPopupClose = () => {
         if (paymentPopup) {
             setPaymentPopup(false);
-            clearOrder();
         } else if (thankyouPopup) {
             setThankyouPopup(false);
         } else if (failedPurchase) {
@@ -125,6 +124,7 @@ export const Home = () => {
                     failedPurchase={failedPurchase}
                     setFailedPurchase={setFailedPurchase}
                     onClose={onPopupClose}
+                    clearOrder={clearOrder}
                     orderData={{
                         name,
                         surname,

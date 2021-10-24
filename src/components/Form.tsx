@@ -299,8 +299,8 @@ export const Form = (props: IForm) => {
                     <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
-                            malteseText="Inwassluwulek? (+€10)"
-                            englishText="Delivery? (+€10)"
+                            malteseText={`Inwassluwulek? (+€${deliveryPrice})`}
+                            englishText={`Delivery? (+€${deliveryPrice})`}
                         />
                     </Row>
                     <Row justifyContent="space-between">

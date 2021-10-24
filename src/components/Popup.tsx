@@ -29,6 +29,7 @@ export interface IPopup {
     failedPurchase: boolean;
     setFailedPurchase: (newBoolean: boolean) => void;
     onClose: () => void;
+    clearOrder: () => void;
     orderData?: OrderData;
 }
 
@@ -81,6 +82,7 @@ export const Popup = (props: IPopup) => {
         if (props.orderData) {
             orderEmail(props.orderData);
             clientEmail(props.orderData);
+            props.clearOrder();
         }
     };
 
