@@ -1,7 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3';
 import styled from 'styled-components';
-import { deliveryPrice, pricePerBox, validateEmail } from '../config';
+import { getDeliveryPrice, getPricePerBox } from '../api';
+import { validateEmail } from '../config';
 import { useResize } from '../hooks';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
@@ -66,6 +67,20 @@ export const Form = (props: IForm) => {
 
     const [generalError, setGeneralError] = useState('');
 
+    const [deliveryPrice, setDeliveryPrice] = useState(0);
+    const [pricePerBox, setPricePerBox] = useState(0);
+
+    const getData = async () => {
+        const result = await getDeliveryPrice();
+        setDeliveryPrice(result);
+        const result2 = await getPricePerBox();
+        setPricePerBox(result2);
+    };
+
+    useEffect(() => {
+        getData();
+    }, []);
+
     const totalPrice = () => {
         if (props.delivery) {
             if (props.price !== '') {
@@ -76,7 +91,7 @@ export const Form = (props: IForm) => {
                     return props.price;
                 }
             } else {
-                return '';
+                return '0.00';
             }
         } else {
             return props.price;
@@ -247,7 +262,7 @@ export const Form = (props: IForm) => {
             <Hr />
             <Spacer height="10px" />
             <Row justifyContent="space-between">
-                <Column width="75%"  >
+                <Column width="75%">
                     <Typography
                         fontSize="20px"
                         englishText="How many boxes in your order?"

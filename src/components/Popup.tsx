@@ -1,6 +1,13 @@
-import { PayPalButtons } from '@paypal/react-paypal-js';
+import {
+    PayPalButtons,
+    PayPalScriptProvider
+    // PayPalHostedField,
+    // PayPalHostedFieldsProvider,
+    // PAYPAL_HOSTED_FIELDS_TYPES,
+    // usePayPalHostedFields
+} from '@paypal/react-paypal-js';
 import styled from 'styled-components';
-import { generatePurchaseUnits, hexToRgb, primaryColor, secondaryColor } from '../config';
+import { hexToRgb, primaryColor, secondaryColor } from '../config';
 import { useResize } from '../hooks';
 import { FlexImage } from './FlexImage';
 import { Spacer } from './Spacer';
@@ -9,6 +16,9 @@ import TitlePNG from '../assets/title.png';
 import { Hr } from './Hr';
 import { Column } from './Column';
 import { Row } from './Row';
+// import { Button } from './Button';
+import { clientEmail, generatePurchaseUnits, orderEmail } from '../api';
+import { OrderData } from '../types';
 
 export interface IPopup {
     amount: number;
@@ -19,6 +29,7 @@ export interface IPopup {
     failedPurchase: boolean;
     setFailedPurchase: (newBoolean: boolean) => void;
     onClose: () => void;
+    orderData?: OrderData;
 }
 
 const StyledPayPalButtons = styled(PayPalButtons)`
@@ -59,63 +70,111 @@ const StyledDiv = styled.div<IStyledDiv>`
 
 export const Popup = (props: IPopup) => {
     const mobile = useResize();
+    // const hostedFields = usePayPalHostedFields();
+
+    // const submitPayment = () => {
+    //     console.log(hostedFields);
+    //     sendEmails()
+    // };
+
+    const sendEmails = () => {
+        if (props.orderData) {
+            orderEmail(props.orderData);
+            clientEmail(props.orderData);
+        }
+    };
 
     return props.failedPurchase || props.purchase || props.thankyou ? (
         <StyledBackground onClick={props.onClose}>
-            <StyledDiv
-                width={mobile ? '80%' : '40%'}
-                // backgroundColor={props.purchase ? 'white' : undefined}
-                onClick={(e) => e.stopPropagation()}
-            >
+            <StyledDiv width={mobile ? '80%' : '40%'} onClick={(e) => e.stopPropagation()}>
                 {props.purchase ? (
                     <>
-                        <StyledPayPalButtons
-                            style={{
-                                shape: 'pill',
-                                color: 'white',
-                                layout: 'horizontal',
-                                height: 37,
-                                tagline: false
+                        <PayPalScriptProvider
+                            options={{
+                                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string
                             }}
-                            createOrder={(_, actions) => {
-                                return actions.order.create({
-                                    purchase_units: generatePurchaseUnits(
-                                        props.amount,
-                                        props.delivery
-                                    )
-                                });
-                            }}
-                            onApprove={async (_, actions) => {
-                                try {
-                                    await actions.order.capture();
-
-                                    props.onClose();
-                                    props.setThankyou(true);
-                                } catch (e) {
-                                    props.onClose();
-                                    props.setFailedPurchase(true);
-                                }
-                            }}
-                        />
+                        >
+                            <StyledPayPalButtons
+                                style={{
+                                    shape: 'pill',
+                                    color: 'white',
+                                    layout: 'horizontal',
+                                    height: 37,
+                                    tagline: false
+                                }}
+                                createOrder={async (_, actions) => {
+                                    return actions.order.create({
+                                        purchase_units: await generatePurchaseUnits(
+                                            props.amount,
+                                            props.delivery
+                                        )
+                                    });
+                                }}
+                                onApprove={async (_, actions) => {
+                                    try {
+                                        await actions.order.capture();
+                                        sendEmails();
+                                        props.onClose();
+                                        props.setThankyou(true);
+                                    } catch (e) {
+                                        props.onClose();
+                                        props.setFailedPurchase(true);
+                                    }
+                                }}
+                            />
+                        </PayPalScriptProvider>
                         <Spacer />
                         <Row justifyContent="space-around">
                             <Column width="40%">
-                                {/* <Hr color={primaryColor} /> */}
                                 <Hr />
                             </Column>
                             <Column width="40%" justifyContent="center" alignItems="center">
-                                <Typography
-                                    // color={primaryColor}
-                                    englishText="OR"
-                                    malteseText="JEW"
-                                />
+                                <Typography englishText="OR" malteseText="JEW" />
                             </Column>
                             <Column width="40%">
                                 <Hr />
-                                {/* <Hr color={primaryColor} /> */}
                             </Column>
                         </Row>
                         <Spacer />
+                        <PayPalScriptProvider
+                            options={{
+                                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string,
+                                'data-client-token': process.env
+                                    .REACT_APP_PAYPAL_CLIENT_SECRET as string,
+                                components: 'hosted-fields,'
+                            }}
+                        >
+                            {/* <PayPalHostedFieldsProvider
+                                createOrder={() => {
+                                    return createPaypalOrder(props.amount, props.delivery);
+                                }}
+                            >
+                                <PayPalHostedField
+                                    id="card-number"
+                                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+                                    options={{ selector: '#card-number' }}
+                                />
+                                <PayPalHostedField
+                                    id="cvv"
+                                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
+                                    options={{ selector: '#card-number' }}
+                                />
+                                <PayPalHostedField
+                                    id="expiration-date"
+                                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
+                                    options={{
+                                        selector: '#expiration-date',
+                                        placeholder: 'MM/YY'
+                                    }}
+                                />
+                                <Spacer />
+                                <Button
+                                    onClick={submitPayment}
+                                    englishText="Confirm Payment"
+                                    malteseText="Ikkonferma l-hlas"
+                                />
+                            </PayPalHostedFieldsProvider> */}
+                        </PayPalScriptProvider>
                     </>
                 ) : props.thankyou ? (
                     <>

@@ -12,7 +12,7 @@ import {
     Popup,
     Column
 } from '../components';
-import { primaryColor, submitClientEmail, submitOrderEmail } from '../config';
+import { primaryColor } from '../config';
 import Image from '../assets/nolabels.png';
 import MalteseImage from '../assets/mt.png';
 import EnglishImage from '../assets/en.png';
@@ -51,22 +51,8 @@ export const Home = () => {
     const onPopupClose = () => {
         if (paymentPopup) {
             setPaymentPopup(false);
-        } else if (thankyouPopup) {
-            const orderData = {
-                name,
-                surname,
-                email,
-                amount: parseInt(amount),
-                price: parseFloat(price),
-                delivery,
-                addressLine1,
-                addressLine2,
-                localityCode
-            };
-
             clearOrder();
-            submitOrderEmail(orderData);
-            submitClientEmail(orderData);
+        } else if (thankyouPopup) {
             setThankyouPopup(false);
         } else if (failedPurchase) {
             setFailedPurchase(false);
@@ -92,7 +78,7 @@ export const Home = () => {
             <FullPage backgroundColor={primaryColor}>
                 <TopBar />
                 <Content>
-                    <Column >
+                    <Column>
                         <FlexImage src={Image} width="65vw" minWidth="600px" alt="Main Image">
                             <FlexImage
                                 src={imageSrc}
@@ -139,6 +125,17 @@ export const Home = () => {
                     failedPurchase={failedPurchase}
                     setFailedPurchase={setFailedPurchase}
                     onClose={onPopupClose}
+                    orderData={{
+                        name,
+                        surname,
+                        email,
+                        amount: parseInt(amount),
+                        price: parseFloat(price),
+                        delivery,
+                        addressLine1,
+                        addressLine2,
+                        localityCode
+                    }}
                 />
             </FullPage>
         </>
