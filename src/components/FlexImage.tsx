@@ -8,6 +8,7 @@ export interface IFlexImage extends IStyledDiv {
 }
 
 interface IStyledDiv {
+    to?: string;
     width?: string;
     minWidth?: string;
     maxWidth?: string;
@@ -37,9 +38,17 @@ const StyledImage = styled.img`
     width: 100%;
 `;
 
-export const FlexImage = ({ src, alt, ...props }: IFlexImage) => (
-    <StyledDiv {...props}>
-        <StyledImage src={src} alt={alt} />
-        {props.children}
-    </StyledDiv>
-);
+export const FlexImage = ({ src, alt, ...props }: IFlexImage) => {
+    const restOfStuff = () => (
+        <>
+            <StyledImage src={src} alt={alt} />
+            {props.children}
+        </>
+    );
+
+    return (
+        <StyledDiv {...props}>
+            {props.to ? <a href={props.to}>{restOfStuff()}</a> : restOfStuff()}
+        </StyledDiv>
+    );
+};

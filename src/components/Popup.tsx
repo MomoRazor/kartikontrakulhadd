@@ -1,9 +1,8 @@
 import {
-    PayPalButtons,
     PayPalScriptProvider
     // PayPalHostedField,
     // PayPalHostedFieldsProvider,
-    // PAYPAL_HOSTED_FIELDS_TYPES,
+    // PAYPAL_HOSTED_FIELDS_TYPES
     // usePayPalHostedFields
 } from '@paypal/react-paypal-js';
 import styled from 'styled-components';
@@ -13,14 +12,15 @@ import { FlexImage } from './FlexImage';
 import { Spacer } from './Spacer';
 import { Typography } from './Typography';
 import TitlePNG from '../assets/title.png';
-import { Hr } from './Hr';
 import { Column } from './Column';
 import { Row } from './Row';
 // import { Button } from './Button';
-import { clientEmail, generatePurchaseUnits, orderEmail } from '../api';
+import { clientEmail, orderEmail } from '../api';
 import { OrderData } from '../types';
+import { PaypalAccountPay } from './PaypalAccountPay';
 
 export interface IPopup {
+    popupError: string;
     amount: number;
     delivery: boolean;
     purchase: boolean;
@@ -32,10 +32,6 @@ export interface IPopup {
     clearOrder: () => void;
     orderData?: OrderData;
 }
-
-const StyledPayPalButtons = styled(PayPalButtons)`
-    display: flex;
-`;
 
 const StyledBackground = styled.div`
     position: fixed;
@@ -64,19 +60,21 @@ const StyledDiv = styled.div<IStyledDiv>`
     box-shadow: -1px 0px 21px 3px rgba(0, 0, 0, 0.3);
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
     max-height: 70vh;
-    overflow: scroll;
     flex-direction: column;
 `;
 
 export const Popup = (props: IPopup) => {
     const mobile = useResize();
+
     // const hostedFields = usePayPalHostedFields();
 
     // const submitPayment = () => {
-    //     console.log(hostedFields);
-    //     sendEmails()
+    //     sendEmails();
     // };
+
+    // const [purchaseUnits, setPurchaseUnits] = useState<any[]>([]);
 
     const sendEmails = () => {
         if (props.orderData) {
@@ -86,9 +84,23 @@ export const Popup = (props: IPopup) => {
         }
     };
 
-    return props.failedPurchase || props.purchase || props.thankyou ? (
+    // const regen = useCallback(async () => {
+    //     if (props.purchase) {
+    //         setPurchaseUnits(await generatePurchaseUnits(props.amount, props.delivery));
+    //     }
+    // }, [props.amount, props.delivery, props.purchase]);
+
+    // useEffect(() => {
+    //     regen();
+    // }, [regen]);
+
+    return props.failedPurchase || props.purchase || props.thankyou || props.popupError !== '' ? (
         <StyledBackground onClick={props.onClose}>
-            <StyledDiv width={mobile ? '80%' : '40%'} onClick={(e) => e.stopPropagation()}>
+            <StyledDiv
+                width={mobile ? '80%' : '40%'}
+                onClick={(e) => e.stopPropagation()}
+                backgroundColor={props.purchase ? 'white' : undefined}
+            >
                 {props.purchase ? (
                     <>
                         <PayPalScriptProvider
@@ -96,36 +108,16 @@ export const Popup = (props: IPopup) => {
                                 'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string
                             }}
                         >
-                            <StyledPayPalButtons
-                                style={{
-                                    shape: 'pill',
-                                    color: 'white',
-                                    layout: 'horizontal',
-                                    height: 37,
-                                    tagline: false
-                                }}
-                                createOrder={async (_, actions) => {
-                                    return actions.order.create({
-                                        purchase_units: await generatePurchaseUnits(
-                                            props.amount,
-                                            props.delivery
-                                        )
-                                    });
-                                }}
-                                onApprove={async (_, actions) => {
-                                    try {
-                                        await actions.order.capture();
-                                        sendEmails();
-                                        props.onClose();
-                                        props.setThankyou(true);
-                                    } catch (e) {
-                                        props.onClose();
-                                        props.setFailedPurchase(true);
-                                    }
-                                }}
+                            <PaypalAccountPay
+                                sendEmails={sendEmails}
+                                amount={props.amount}
+                                delivery={props.delivery}
+                                onClose={props.onClose}
+                                setFailedPurchase={props.setFailedPurchase}
+                                setThankyou={props.setThankyou}
                             />
                         </PayPalScriptProvider>
-                        <Spacer />
+                        {/* <Spacer />
                         <Row justifyContent="space-around">
                             <Column width="40%">
                                 <Hr />
@@ -137,18 +129,21 @@ export const Popup = (props: IPopup) => {
                                 <Hr />
                             </Column>
                         </Row>
-                        <Spacer />
-                        <PayPalScriptProvider
+                        <Spacer /> */}
+                        {/* <PayPalScriptProvider
+                            // TODO get actual data-client-token
                             options={{
                                 'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string,
-                                'data-client-token': process.env
-                                    .REACT_APP_PAYPAL_CLIENT_SECRET as string,
-                                components: 'hosted-fields,'
+                                'data-client-token': '',
+                                components: 'hosted-fields'
                             }}
                         >
-                            {/* <PayPalHostedFieldsProvider
-                                createOrder={() => {
-                                    return createPaypalOrder(props.amount, props.delivery);
+                            <PayPalHostedFieldsProvider
+                                createOrder={async () => {
+                                    const result = await axiosInstance.post<any>(
+                                        'createPaypalOrder'
+                                    );
+                                    return result.data.order;
                                 }}
                             >
                                 <PayPalHostedField
@@ -175,40 +170,82 @@ export const Popup = (props: IPopup) => {
                                     englishText="Confirm Payment"
                                     malteseText="Ikkonferma l-hlas"
                                 />
-                            </PayPalHostedFieldsProvider> */}
-                        </PayPalScriptProvider>
+                            </PayPalHostedFieldsProvider>
+                        </PayPalScriptProvider> */}
                     </>
                 ) : props.thankyou ? (
                     <>
                         <Spacer height="40px" />
-                        <Row justifyContent="space-around">
-                            <Column width="50%">
-                                <Typography
-                                    textAlign="end"
-                                    fontSize="23px"
-                                    malteseText="L-ordni tiegħek"
-                                    englishText="Your order"
-                                />
-                                <Typography
-                                    textAlign="end"
-                                    fontSize="23px"
-                                    malteseText="qed tiġi proċessata!"
-                                    englishText="is being processed"
-                                />
-                                <Typography
-                                    fontSize="23px"
-                                    textAlign="end"
-                                    malteseText="Grazzi ħafna ❤"
-                                    englishText="Thanks a lot ❤"
-                                />
+                        {mobile ? (
+                            <Column>
+                                <Row>
+                                    <Column>
+                                        <Typography
+                                            fontSize="23px"
+                                            malteseText="L-ordni tiegħek"
+                                            englishText="Your order"
+                                        />
+                                        <Typography
+                                            fontSize="23px"
+                                            malteseText="qed tiġi proċessata!"
+                                            englishText="is being processed"
+                                        />
+                                        <Typography
+                                            fontSize="23px"
+                                            malteseText="Grazzi ħafna ❤"
+                                            englishText="Thanks a lot ❤"
+                                        />
+                                    </Column>
+                                </Row>
+                                <Row justifyContent="flex-end">
+                                    <FlexImage
+                                        alt="Title"
+                                        src={TitlePNG}
+                                        width="40%"
+                                        padding="20px"
+                                    />
+                                </Row>
                             </Column>
-                            <FlexImage alt="Title" src={TitlePNG} width="30%" padding="20px" />
-                        </Row>
+                        ) : (
+                            <Row justifyContent="space-around">
+                                <Column width="50%">
+                                    <Typography
+                                        textAlign="end"
+                                        fontSize="23px"
+                                        malteseText="L-ordni tiegħek"
+                                        englishText="Your order"
+                                    />
+                                    <Typography
+                                        textAlign="end"
+                                        fontSize="23px"
+                                        malteseText="qed tiġi proċessata!"
+                                        englishText="is being processed"
+                                    />
+                                    <Typography
+                                        fontSize="23px"
+                                        textAlign="end"
+                                        malteseText="Grazzi ħafna ❤"
+                                        englishText="Thanks a lot ❤"
+                                    />
+                                </Column>
+                                <FlexImage alt="Title" src={TitlePNG} width="30%" padding="20px" />
+                            </Row>
+                        )}
                         <Spacer height="40px" />
                     </>
                 ) : props.failedPurchase ? (
                     <>
                         <Typography>ERROR!</Typography>
+                    </>
+                ) : props.popupError !== '' ? (
+                    <>
+                        <Spacer height="40px" />
+                        <Row justifyContent="space-around">
+                            <Typography fontSize="23px" textAlign="center">
+                                {props.popupError}
+                            </Typography>
+                        </Row>
+                        <Spacer height="40px" />
                     </>
                 ) : (
                     <></>

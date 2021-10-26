@@ -13,3 +13,7 @@ body {
     width: 0;
     background: transparent;
 }
+
+.paypal-buttons {
+    margin: auto;
+}

@@ -14,3 +14,5 @@ export * from './Input';
 export * from './Popup';
 export * from './Column';
 export * from './Row';
+export * from './PaypalAccountPay';
+export * from './TextArea';

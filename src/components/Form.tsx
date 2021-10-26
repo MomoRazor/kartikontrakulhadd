@@ -7,14 +7,19 @@ import { useResize } from '../hooks';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
 import { Column } from './Column';
+import { FlexImage } from './FlexImage';
 import { Hr } from './Hr';
 import { Input } from './Input';
 import { LanguageContext, Languages } from './language';
 import { Row } from './Row';
 import { Spacer } from './Spacer';
 import { Typography } from './Typography';
+import Facebook from '../assets/socials-02.png';
+import Instagram from '../assets/socials-03.png';
+import { TextArea } from './TextArea';
 
 interface IForm {
+    setPopupError: (newError: string) => void;
     setPaymentPopup: (newBoolean: boolean) => void;
     name: string;
     setName: (newString: string) => void;
@@ -22,6 +27,8 @@ interface IForm {
     setSurname: (newString: string) => void;
     email: string;
     setEmail: (newString: string) => void;
+    mobileNumber: string;
+    setMobileNumber: (newString: string) => void;
     amount: string;
     setAmount: (newString: string) => void;
     delivery: boolean;
@@ -32,6 +39,8 @@ interface IForm {
     setAddressLine2: (newString: string) => void;
     localityCode: string;
     setLocalityCode: (newString: string) => void;
+    deliveryNote: string;
+    setDeliveryNote: (newString: string) => void;
     price: string;
     setPrice: (newString: string) => void;
     submitted: boolean;
@@ -43,6 +52,7 @@ interface IStyledForm {
 }
 
 const StyledForm = styled.div<IStyledForm>`
+    margin-top: ${({ mobile }) => (!mobile ? '40px' : '')};
     margin-left: ${({ mobile }) => (!mobile ? '-100px' : '')};
     display: flex;
     flex-direction: column;
@@ -50,7 +60,7 @@ const StyledForm = styled.div<IStyledForm>`
     z-index: 4;
 `;
 
-export const Form = (props: IForm) => {
+export const Form = ({ setPopupError, ...props }: IForm) => {
     const mobile = useResize();
     const language = useContext(LanguageContext);
 
@@ -59,27 +69,62 @@ export const Form = (props: IForm) => {
     const [errorName, setErrorName] = useState('');
     const [errorSurname, setErrorSurname] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
+    const [errorMobileNumber, setErrorMobileNumber] = useState('');
     const [errorAmount, setErrorAmount] = useState('');
 
     const [errorAddressLine1, setErrorAddressLine1] = useState('');
     const [errorAddressLine2, setErrorAddressLine2] = useState('');
     const [errorLocalityCode, setErrorLocalityCode] = useState('');
 
+    const [globalError, setGlobalError] = useState(false);
+
     const [generalError, setGeneralError] = useState('');
 
     const [deliveryPrice, setDeliveryPrice] = useState(0);
     const [pricePerBox, setPricePerBox] = useState(0);
 
-    const getData = async () => {
-        const result = await getDeliveryPrice();
-        setDeliveryPrice(result);
-        const result2 = await getPricePerBox();
-        setPricePerBox(result2);
-    };
+    const getErrorMsg = useCallback(
+        (englishText?: string, malteseText?: string) => {
+            if (language.selectedLanguage === Languages.EN) {
+                return englishText || 'Required';
+            } else if (language.selectedLanguage === Languages.MT) {
+                return malteseText || 'Insejt din';
+            } else {
+                return '';
+            }
+        },
+        [language.selectedLanguage]
+    );
+
+    useEffect(() => {
+        if (globalError) {
+            setPopupError(
+                getErrorMsg(
+                    "We've hit a snag! Tell us so we can fix it!",
+                    'Inqalat xi nejka! Għidilna ħa nirranġaw malajr!'
+                )
+            );
+        } else {
+            setPopupError('');
+        }
+    }, [getErrorMsg, globalError, setPopupError]);
+
+    const getData = useCallback(async () => {
+        try {
+            const result = await getDeliveryPrice();
+            await setDeliveryPrice(result);
+            const result2 = await getPricePerBox();
+            await setPricePerBox(result2);
+            setGlobalError(false);
+        } catch (e) {
+            console.error(e);
+            setGlobalError(true);
+        }
+    }, []);
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [getData]);
 
     const totalPrice = () => {
         if (props.delivery) {
@@ -97,19 +142,6 @@ export const Form = (props: IForm) => {
             return props.price;
         }
     };
-
-    const getErrorMsg = useCallback(
-        (englishText?: string, malteseText?: string) => {
-            if (language.selectedLanguage === Languages.EN) {
-                return englishText || 'Required';
-            } else if (language.selectedLanguage === Languages.MT) {
-                return malteseText || 'Insejt din';
-            } else {
-                return '';
-            }
-        },
-        [language.selectedLanguage]
-    );
 
     const submitPayment = () => {
         let error = validate();
@@ -168,6 +200,24 @@ export const Form = (props: IForm) => {
             }
         }
 
+        if (props.mobileNumber === '') {
+            error = true;
+            setErrorMobileNumber(getErrorMsg());
+        } else {
+            if (props.mobileNumber.length < 8) {
+                error = true;
+                setErrorMobileNumber(
+                    language.selectedLanguage === Languages.EN
+                        ? 'Invalid Number'
+                        : language.selectedLanguage === Languages.MT
+                        ? 'Numru Invalidu'
+                        : ''
+                );
+            } else {
+                setErrorMobileNumber('');
+            }
+        }
+
         if (props.amount === '') {
             error = true;
             setErrorAmount(getErrorMsg());
@@ -203,6 +253,7 @@ export const Form = (props: IForm) => {
         props.name,
         props.surname,
         props.email,
+        props.mobileNumber,
         props.amount,
         props.delivery,
         props.addressLine1,
@@ -224,6 +275,7 @@ export const Form = (props: IForm) => {
         setErrorName('');
         setErrorSurname('');
         setErrorEmail('');
+        setErrorMobileNumber('');
         setErrorAmount('');
 
         setErrorAddressLine1('');
@@ -234,7 +286,17 @@ export const Form = (props: IForm) => {
     return (
         <StyledForm mobile={mobile}>
             <Typography fontSize="20px" englishText="Hey you." malteseText="Haw' int." />
-            <Typography fontSize="20px" englishText="What's your name?" malteseText="X'jismek?" />
+            <Typography
+                fontSize="20px"
+                englishText="Heard you want Karti Kontra Kulħadd."
+                malteseText="Smajna li trid Karti Kontra Kulħadd."
+            />
+            <Spacer height="15px" />
+            <Typography
+                fontSize="20px"
+                englishText="Who the f*ck are you?"
+                malteseText="Min iż-ż*bb int?"
+            />
             <Spacer height="10px" />
             <Input
                 value={props.name}
@@ -259,22 +321,30 @@ export const Form = (props: IForm) => {
                 error={errorEmail}
             />
             <Spacer height="10px" />
+            <Input
+                value={props.mobileNumber}
+                onChange={props.setMobileNumber}
+                placeholderEn="Mobile Number (WhatsApp)"
+                placeholderMt="Numru tal-Mobile (WhatsApp)"
+                error={errorMobileNumber}
+                type="number"
+            />
+            <Spacer height="10px" />
             <Hr />
             <Spacer height="10px" />
             <Row justifyContent="space-between">
-                <Column width="75%">
+                <Column width="75%" justifyContent="center">
                     <Typography
                         fontSize="20px"
                         englishText="How many boxes in your order?"
                         malteseText="Kemm trid kaxxi fl-ordni tiegħek?"
                     />
                 </Column>
-                <Column width="auto">
+                <Column width="auto" justifyContent="center">
                     <Input
                         error={errorAmount}
                         type="number"
-                        placeholderEn="69..."
-                        placeholderMt="69..."
+                        placeholder="69..."
                         value={props.amount}
                         width="65px"
                         onChange={(value) => {
@@ -299,14 +369,14 @@ export const Form = (props: IForm) => {
                     <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
-                            malteseText={`Inwassluwulek? (+€${deliveryPrice})`}
+                            malteseText={`Nġibuh aħna? (+€${deliveryPrice})`}
                             englishText={`Delivery? (+€${deliveryPrice})`}
                         />
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="(Ikun għandek ftit jiem oħra.)"
-                            englishText="(Should arrive in a matter of days.)"
+                            malteseText="(Jekk tagħżel din, il-logħba ħa tassallek fi żmien ftit jiem. Il-konsenni is-soltu niproċessawhom matul il-ġimgħa filgħaxija jew is-Sibt filgħodu. Aħna nżommukom infurmati bil-WhatsApp.)"
+                            englishText="(Ordering with delivery means the game will come to you in a matter of days. Deliveries are usually processed on weekday evenings or Saturday mornings. We will keep you updated via WhatsApp.)"
                         />
                     </Row>
                 </Column>
@@ -325,21 +395,21 @@ export const Form = (props: IForm) => {
                     <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
-                            malteseText="Tinżel għalih?"
-                            englishText="Pickup?"
+                            malteseText="Tinżel għalih? (B'xejn)"
+                            englishText="Pickup? (Free)"
                         />
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="(Segwi il-midja soċjali tagħna biex tkun taf meta u fejn tista tiġi għalih. Jista' jkun għada, jista jkun ix-xahar id-dieħel)"
-                            englishText="(Follow our social media profiles for the next pickup date and location. Could be tomorrow, could be next month)"
+                            malteseText="(Jekk tagħżel din, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi x'imkien lejn in-Naxxar, l-Imqabba jew is-Siġġiewi) tista tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp.)"
+                            englishText="(Ordering with pickup means you must pick up the game yourself. Pickup days and locations (usually somewhere around Naxxar, Mqabba or Siġġiewi) will be communicated in advance on our socials and via WhatsApp.)"
                         />
                     </Row>
                 </Column>
             </Row>
             <Spacer height="10px" />
             <Hr />
-            <Spacer height="10px" />
+            <Spacer height="15px" />
             {props.delivery ? (
                 <>
                     <Typography fontSize="20px" englishText="Address" malteseText="Indirizz" />
@@ -369,6 +439,23 @@ export const Form = (props: IForm) => {
                     />
                     <Spacer height="10px" />
                     <Hr />
+                    <Spacer height="15px" />
+                    <Typography
+                        fontSize="20px"
+                        englishText="Special Requests"
+                        malteseText="Talbiet Speċjali"
+                    />
+                    <Spacer height="10px" />
+                    <TextArea
+                        width="100%"
+                        rows={2}
+                        value={props.deliveryNote}
+                        onChange={props.setDeliveryNote}
+                        placeholderMt="Noti (delivery bla kuntatt, ħallih wara il-bieb l-isfar, extra pepperoni etc.)"
+                        placeholderEn="Notes (contactless delivery, leave it at the yellow door, extra pepperoni)"
+                    />
+                    <Spacer height="10px" />
+                    <Hr />
                     <Spacer height="10px" />
                 </>
             ) : (
@@ -392,6 +479,24 @@ export const Form = (props: IForm) => {
             ) : (
                 <></>
             )}
+            <Spacer height="10px" />
+            <Hr />
+            <Spacer height="20px" />
+            <Row justifyContent="flex-end">
+                <FlexImage
+                    alt="FacebookImg"
+                    width="40px"
+                    to="https://www.instagram.com/kartikontrakulhaddofficial"
+                    src={Instagram}
+                />
+                <Spacer width="20px" />
+                <FlexImage
+                    alt="InstagramImg"
+                    width="40px"
+                    to="https://www.facebook.com/kartikontrakulhadd"
+                    src={Facebook}
+                />
+            </Row>
             <Spacer height="40px" />
         </StyledForm>
     );

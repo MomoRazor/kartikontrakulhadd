@@ -22,12 +22,14 @@ export const Home = () => {
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [amount, setAmount] = useState('');
+    const [mobileNumber, setMobileNumber] = useState('');
     const [price, setPrice] = useState('0.00');
     const [delivery, setDelivery] = useState(true);
 
     const [addressLine1, setAddressLine1] = useState('');
     const [addressLine2, setAddressLine2] = useState('');
     const [localityCode, setLocalityCode] = useState('');
+    const [deliveryNote, setDeliveryNote] = useState('');
 
     const mobile = useResize();
     const { selectedLanguage } = useContext(LanguageContext);
@@ -39,6 +41,8 @@ export const Home = () => {
     const [failedPurchase, setFailedPurchase] = useState(false);
 
     const [submitted, setSubmitted] = useState(false);
+
+    const [popupError, setPopupError] = useState('');
 
     useEffect(() => {
         if (selectedLanguage === Languages.EN) {
@@ -63,11 +67,13 @@ export const Home = () => {
         setName('');
         setSurname('');
         setEmail('');
+        setMobileNumber('');
         setAmount('');
         setDelivery(true);
         setAddressLine1('');
         setAddressLine2('');
         setLocalityCode('');
+        setDeliveryNote('');
         setPrice('0.00');
     };
 
@@ -78,7 +84,13 @@ export const Home = () => {
                 <TopBar />
                 <Content>
                     <Column>
-                        <FlexImage src={Image} width="65vw" minWidth="600px" alt="Main Image">
+                        <FlexImage
+                            src={Image}
+                            width="65vw"
+                            minWidth="600px"
+                            margin={mobile ? '0 0 0 40px' : '0'}
+                            alt="Main Image"
+                        >
                             <FlexImage
                                 src={imageSrc}
                                 width="35%"
@@ -92,6 +104,7 @@ export const Home = () => {
                         </FlexImage>
                     </Column>
                     <Form
+                        setPopupError={setPopupError}
                         submitted={submitted}
                         setSubmitted={setSubmitted}
                         name={name}
@@ -100,6 +113,8 @@ export const Home = () => {
                         setSurname={setSurname}
                         email={email}
                         setEmail={setEmail}
+                        mobileNumber={mobileNumber}
+                        setMobileNumber={setMobileNumber}
                         amount={amount}
                         setAmount={setAmount}
                         price={price}
@@ -112,10 +127,13 @@ export const Home = () => {
                         setAddressLine2={setAddressLine2}
                         localityCode={localityCode}
                         setLocalityCode={setLocalityCode}
+                        deliveryNote={deliveryNote}
+                        setDeliveryNote={setDeliveryNote}
                         setPaymentPopup={setPaymentPopup}
                     />
                 </Content>
                 <Popup
+                    popupError={popupError}
                     amount={parseInt(amount)}
                     delivery={delivery}
                     purchase={paymentPopup}
@@ -129,12 +147,13 @@ export const Home = () => {
                         name,
                         surname,
                         email,
+                        mobileNumber,
                         amount: parseInt(amount),
-                        price: parseFloat(price),
                         delivery,
                         addressLine1,
                         addressLine2,
-                        localityCode
+                        localityCode,
+                        deliveryNote
                     }}
                 />
             </FullPage>

@@ -6,57 +6,34 @@ export const axiosInstance = axios.create({
 });
 
 export const generatePurchaseUnits = async (amount: number, delivery?: boolean) => {
-    try {
-        const result = await axiosInstance.post<any>('generatePurchaseUnits', {
-            amount: amount,
-            delivery: delivery
-        });
+    const result = await axiosInstance.post<any>('generatePurchaseUnits', {
+        amount: amount,
+        delivery: delivery
+    });
 
-        return result.data.purchaseUnits;
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
+    return result.data.purchaseUnits;
 };
 
 export const orderEmail = async (orderData: OrderData) => {
-    try {
-        await axiosInstance.post('orderEmail', {
-            orderData: orderData
-        });
-    } catch (e) {
-        console.error(e);
-    }
+    await axiosInstance.post('orderEmail', {
+        orderData: orderData
+    });
 };
 
 export const clientEmail = async (orderData: OrderData) => {
-    try {
-        await axiosInstance.post('clientEmail', {
-            orderData: orderData
-        });
-    } catch (e) {
-        console.error(e);
-    }
+    await axiosInstance.post('clientEmail', {
+        orderData: orderData
+    });
 };
 
 export const getDeliveryPrice = async () => {
-    try {
-        const result = await axiosInstance.get<any>('getDeliveryPrice');
+    const result = await axiosInstance.get<any>('getDeliveryPrice');
 
-        return parseFloat(result.data.deliveryPrice);
-    } catch (e) {
-        console.error(e);
-        return 0;
-    }
+    return parseFloat(result.data.deliveryPrice);
 };
 
 export const getPricePerBox = async () => {
-    try {
-        const result = await axiosInstance.get<any>('getPricePerBox');
+    const result = await axiosInstance.get<any>('getPricePerBox');
 
-        return parseFloat(result.data.pricePerBox);
-    } catch (e) {
-        console.error(e);
-        return 0;
-    }
+    return parseFloat(result.data.pricePerBox);
 };

@@ -4,23 +4,22 @@ import { primaryColor } from '../config';
 import { LanguageContext, Languages } from './language';
 import { Spacer } from './Spacer';
 
-export interface IInput extends IStyledInput {
+export interface ITextArea extends IStyledTextArea {
     placeholder?: string;
     placeholderEn?: string;
     placeholderMt?: string;
     value: string;
-    type?: string;
     error?: string;
+    rows?: number;
     onChange?: (newString: string) => void;
 }
 
-interface IStyledInput {
+interface IStyledTextArea {
     width?: string;
 }
 
-const StyledInput = styled.input<IStyledInput>`
-    width: ${({ width }) => (width ? width : '')};
-    height: 20px;
+const StyledTextArea = styled.textarea<IStyledTextArea>`
+    width: ${({ width }) => (width ? width + ' ! important' : '')};
     display: flex;
     border-radius: 5px;
     background-color: white;
@@ -28,6 +27,7 @@ const StyledInput = styled.input<IStyledInput>`
     font-family: 'Crete Round', serif;
     color: ${primaryColor};
     padding: 10px;
+    box-sizing: border-box;
 
     :focus {
         outline: none;
@@ -52,7 +52,7 @@ const StyledSmall = styled.small`
     color: red;
 `;
 
-export const Input = (props: IInput) => {
+export const TextArea = (props: ITextArea) => {
     const language = useContext(LanguageContext);
 
     const getPlaceHolder = () => {
@@ -69,23 +69,16 @@ export const Input = (props: IInput) => {
 
     return (
         <>
-            <StyledInput
+            <StyledTextArea
+                rows={props.rows}
                 width={props.width}
-                type={props.type}
                 value={props.value}
                 readOnly={!props.onChange}
                 onChange={(e) => props.onChange && props.onChange(e.target.value)}
                 placeholder={getPlaceHolder()}
             />
-
-            {props.error ? (
-                <>
-                    <Spacer height="5px" />
-                    <StyledSmall>{props.error}</StyledSmall>{' '}
-                </>
-            ) : (
-                <></>
-            )}
+            <Spacer height="5px" />
+            {props.error ? <StyledSmall>{props.error}</StyledSmall> : <></>}
         </>
     );
 };

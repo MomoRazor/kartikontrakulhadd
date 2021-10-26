@@ -18,8 +18,6 @@ interface IP {
 }
 
 const StyledP = styled.p<IP>`
-    margin: 0;
-    padding: 0;
     display: flex;
     color: ${({ color }) => (color ? color : 'white')};
     font-family: 'Crete Round', serif;
