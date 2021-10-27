@@ -31,6 +31,8 @@ export const validateEmail = (email: string) => {
     return re.test(String(email).toLowerCase());
 };
 
+export const soldOut = true;
+
 // //TODO to remove
 // export const createPaypalOrder = async (amount: number, delivery: boolean) => {
 //     const request = new paypal.orders.OrderCreateRequest();

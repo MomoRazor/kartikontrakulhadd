@@ -12,6 +12,7 @@ export interface IInput extends IStyledInput {
     type?: string;
     error?: string;
     onChange?: (newString: string) => void;
+    min?: number;
 }
 
 interface IStyledInput {
@@ -70,6 +71,7 @@ export const Input = (props: IInput) => {
     return (
         <>
             <StyledInput
+                min={props.min}
                 width={props.width}
                 type={props.type}
                 value={props.value}

@@ -1,7 +1,7 @@
-import { ReactNode } from "react"
-import styled from "styled-components"
+import { ReactNode } from 'react';
+import styled from 'styled-components';
 
-export interface IRow{
+export interface IRow {
     justifyContent?: string;
     children: ReactNode;
 }
@@ -12,8 +12,6 @@ const StyledDiv = styled.div<IRow>`
     justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : '')};
     align-items: center;
     width: 100%;
-`
+`;
 
-export const Row = (props: IRow) => (
-    <StyledDiv {...props} />
-)
+export const Row = (props: IRow) => <StyledDiv {...props} />;

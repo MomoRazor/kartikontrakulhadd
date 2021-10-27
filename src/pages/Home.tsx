@@ -12,7 +12,7 @@ import {
     Popup,
     Column
 } from '../components';
-import { primaryColor } from '../config';
+import { primaryColor, soldOut } from '../config';
 import Image from '../assets/nolabels.png';
 import MalteseImage from '../assets/mt.png';
 import EnglishImage from '../assets/en.png';
@@ -133,6 +133,7 @@ export const Home = () => {
                     />
                 </Content>
                 <Popup
+                    soldOut={soldOut}
                     popupError={popupError}
                     amount={parseInt(amount)}
                     delivery={delivery}

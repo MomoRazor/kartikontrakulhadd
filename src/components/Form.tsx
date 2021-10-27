@@ -14,8 +14,8 @@ import { LanguageContext, Languages } from './language';
 import { Row } from './Row';
 import { Spacer } from './Spacer';
 import { Typography } from './Typography';
-import Facebook from '../assets/socials-02.png';
-import Instagram from '../assets/socials-03.png';
+import Facebook from '../assets/socials-07.png';
+import Instagram from '../assets/socials-08.png';
 import { TextArea } from './TextArea';
 
 interface IForm {
@@ -222,7 +222,18 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
             error = true;
             setErrorAmount(getErrorMsg());
         } else {
-            setErrorAmount('');
+            if (parseFloat(props.amount) < 0) {
+                error = true;
+                setErrorAmount(
+                    language.selectedLanguage === Languages.EN
+                        ? 'Invalid Number'
+                        : language.selectedLanguage === Languages.MT
+                        ? 'Numru Invalidu'
+                        : ''
+                );
+            } else {
+                setErrorAmount('');
+            }
         }
 
         if (props.delivery) {
@@ -346,13 +357,19 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                         type="number"
                         placeholder="69..."
                         value={props.amount}
+                        min={0}
                         width="65px"
                         onChange={(value) => {
                             props.setAmount(value);
                             if (value !== '') {
-                                props.setPrice((pricePerBox * parseInt(value)).toFixed(2));
+                                const totalPrice = pricePerBox * parseInt(value);
+                                if (totalPrice >= 0) {
+                                    props.setPrice(totalPrice.toFixed(2));
+                                } else {
+                                    props.setPrice('0.00');
+                                }
                             } else {
-                                props.setPrice('');
+                                props.setPrice('0.00');
                             }
                         }}
                     />
@@ -375,8 +392,8 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="(Jekk tagħżel din, il-logħba ħa tassallek fi żmien ftit jiem. Il-konsenni is-soltu niproċessawhom matul il-ġimgħa filgħaxija jew is-Sibt filgħodu. Aħna nżommukom infurmati bil-WhatsApp.)"
-                            englishText="(Ordering with delivery means the game will come to you in a matter of days. Deliveries are usually processed on weekday evenings or Saturday mornings. We will keep you updated via WhatsApp.)"
+                            malteseText="Jekk tagħżel din, il-logħba ħa tassallek fi żmien ftit jiem. Il-konsenni is-soltu niproċessawhom matul il-ġimgħa filgħaxija jew is-Sibt filgħodu. Aħna nżommukom infurmati bil-WhatsApp."
+                            englishText="Ordering with delivery means the game will come to you in a matter of days. Deliveries are usually processed on weekday evenings or Saturday mornings. We will keep you updated via WhatsApp."
                         />
                     </Row>
                 </Column>
@@ -401,8 +418,8 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="(Jekk tagħżel din, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi x'imkien lejn in-Naxxar, l-Imqabba jew is-Siġġiewi) tista tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp.)"
-                            englishText="(Ordering with pickup means you must pick up the game yourself. Pickup days and locations (usually somewhere around Naxxar, Mqabba or Siġġiewi) will be communicated in advance on our socials and via WhatsApp.)"
+                            malteseText="Jekk tagħżel din, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi in-Naxxar, l-Imqabba jew is-Siġġiewi) tista tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp."
+                            englishText="Ordering with pickup means you must pick up the game yourself. Pickup days and locations (usually Naxxar, Mqabba or Siġġiewi) will be communicated in advance on our socials and via WhatsApp."
                         />
                     </Row>
                 </Column>
@@ -451,8 +468,8 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                         rows={2}
                         value={props.deliveryNote}
                         onChange={props.setDeliveryNote}
-                        placeholderMt="Noti (delivery bla kuntatt, ħallih wara il-bieb l-isfar, extra pepperoni etc.)"
-                        placeholderEn="Notes (contactless delivery, leave it at the yellow door, extra pepperoni)"
+                        placeholderMt='"Delivery bla kuntatt", "Ħallih wara il-bieb l-isfar", "Extra pepperoni" etc.'
+                        placeholderEn='"Contactless delivery", "Leave it at the yellow door", "Extra pepperoni" etc.'
                     />
                     <Spacer height="10px" />
                     <Hr />
@@ -485,14 +502,14 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
             <Row justifyContent="flex-end">
                 <FlexImage
                     alt="FacebookImg"
-                    width="40px"
+                    width="30px"
                     to="https://www.instagram.com/kartikontrakulhaddofficial"
                     src={Instagram}
                 />
                 <Spacer width="20px" />
                 <FlexImage
                     alt="InstagramImg"
-                    width="40px"
+                    width="30px"
                     to="https://www.facebook.com/kartikontrakulhadd"
                     src={Facebook}
                 />

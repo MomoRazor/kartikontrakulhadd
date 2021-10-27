@@ -15,6 +15,7 @@ interface IP {
     fontSize?: string;
     color?: string;
     textAlign?: string;
+    width?: string;
 }
 
 const StyledP = styled.p<IP>`
@@ -26,6 +27,7 @@ const StyledP = styled.p<IP>`
     padding: ${({ padding }) => padding || 0};
     text-decoration: ${({ underline }) => (underline ? 'underline' : 'none')};
     text-align: ${({ textAlign }) => (textAlign ? textAlign : '')};
+    width: ${({ width }) => (width ? width : '')};
 `;
 
 export const Typography = ({ children, englishText, malteseText, ...props }: ITypography) => {
