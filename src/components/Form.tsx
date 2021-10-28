@@ -222,7 +222,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
             error = true;
             setErrorAmount(getErrorMsg());
         } else {
-            if (parseFloat(props.amount) < 0) {
+            if (parseFloat(props.amount) <= 0) {
                 error = true;
                 setErrorAmount(
                     language.selectedLanguage === Languages.EN

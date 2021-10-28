@@ -1,6 +1,7 @@
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import styled from 'styled-components';
 import { generatePurchaseUnits } from '../api';
+import { primaryColor } from '../config';
 import { Typography } from './Typography';
 
 export interface IPaypalAccountPay {
@@ -48,6 +49,6 @@ export const PaypalAccountPay = (props: IPaypalAccountPay) => {
             }}
         />
     ) : (
-        <Typography>Loading</Typography>
+        <Typography color={primaryColor}>Loading</Typography>
     );
 };
