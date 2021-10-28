@@ -296,7 +296,7 @@ export const Popup = (props: IPopup) => {
                         ) : (
                             <>
                                 <Spacer height="40px" />
-                                <Column alignItems="center" width="65%">
+                                <Column alignItems="center" width="70%">
                                     <FlexImage
                                         alt="Title"
                                         src={SoldOut}
