@@ -418,7 +418,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="Jekk tagħżel din, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi in-Naxxar, l-Imqabba jew is-Siġġiewi) tista tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp."
+                            malteseText="Jekk tagħżel din, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi in-Naxxar, l-Imqabba jew is-Siġġiewi) tista' tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp."
                             englishText="Ordering with pickup means you must pick up the game yourself. Pickup days and locations (usually Naxxar, Mqabba or Siġġiewi) will be communicated in advance on our socials and via WhatsApp."
                         />
                     </Row>
