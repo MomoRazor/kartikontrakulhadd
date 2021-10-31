@@ -118,7 +118,8 @@ export const Popup = (props: IPopup) => {
                     <>
                         <PayPalScriptProvider
                             options={{
-                                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string
+                                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string,
+                                currency: 'EUR'
                             }}
                         >
                             <PaypalAccountPay
