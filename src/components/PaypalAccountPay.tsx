@@ -24,8 +24,9 @@ export const PaypalAccountPay = (props: IPaypalAccountPay) => {
 
     //TODO to remove
     useEffect(() => {
+        console.log('Sending Emails');
         props.sendEmails();
-    }, []);
+    }, [props]);
 
     return isResolved ? (
         <StyledPayPalButtons

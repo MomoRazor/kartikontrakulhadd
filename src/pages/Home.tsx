@@ -72,7 +72,6 @@ export const Home = () => {
             const result2 = await getPricePerBox();
             await setPricePerBox(result2);
             const result3 = await getStockNumber();
-            console.log(result3);
             await setInStock(result3);
             setGlobalError(false);
         } catch (e) {
