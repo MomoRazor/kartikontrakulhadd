@@ -7,8 +7,8 @@ import { Typography } from './Typography';
 
 export interface IPaypalAccountPay {
     sendEmails: () => void;
+    onFailedPayment: () => void;
     orderData: OrderData;
-    setFailedPurchase: (newBoolean: boolean) => void;
 }
 
 const StyledPayPalButtons = styled(PayPalButtons)`
@@ -63,7 +63,7 @@ export const PaypalAccountPay = (props: IPaypalAccountPay) => {
                     await actions.order.capture();
                     props.sendEmails();
                 } catch (e) {
-                    props.setFailedPurchase(true);
+                    props.onFailedPayment();
                 }
             }}
         />

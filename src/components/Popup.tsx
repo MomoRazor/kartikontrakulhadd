@@ -126,7 +126,10 @@ export const Popup = (props: IPopup) => {
                         >
                             <PaypalAccountPay
                                 sendEmails={sendEmails}
-                                setFailedPurchase={props.setFailedPurchase}
+                                onFailedPayment={() => {
+                                    props.setPurchase(false);
+                                    props.setFailedPurchase(true);
+                                }}
                                 orderData={props.orderData}
                             />
                         </PayPalScriptProvider>
