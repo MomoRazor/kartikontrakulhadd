@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useResize } from '../hooks';
 import {
     LanguageContext,
@@ -12,10 +12,11 @@ import {
     Popup,
     Column
 } from '../components';
-import { primaryColor, soldOut } from '../config';
+import { getErrorMsg, primaryColor } from '../config';
 import Image from '../assets/nolabels.png';
 import MalteseImage from '../assets/mt.png';
 import EnglishImage from '../assets/en.png';
+import { getDeliveryPrice, getPricePerBox, getStockNumber } from '../api';
 
 export const Home = () => {
     const [name, setName] = useState('');
@@ -43,6 +44,44 @@ export const Home = () => {
     const [submitted, setSubmitted] = useState(false);
 
     const [popupError, setPopupError] = useState('');
+
+    const [deliveryPrice, setDeliveryPrice] = useState(0);
+    const [pricePerBox, setPricePerBox] = useState(0);
+    const [inStock, setInStock] = useState(0);
+    const [globalError, setGlobalError] = useState(false);
+
+    useEffect(() => {
+        if (globalError) {
+            setPopupError(
+                getErrorMsg(
+                    selectedLanguage,
+                    "We've hit a snag! Tell us so we can fix it!",
+                    'Inqalat xi nejka! Għidilna ħa nirranġaw malajr!'
+                )
+            );
+        } else {
+            setPopupError('');
+        }
+    }, [globalError, selectedLanguage]);
+
+    const getData = useCallback(async () => {
+        try {
+            const result = await getDeliveryPrice();
+            await setDeliveryPrice(result);
+            const result2 = await getPricePerBox();
+            await setPricePerBox(result2);
+            const result3 = await getStockNumber();
+            await setInStock(result3);
+            setGlobalError(false);
+        } catch (e) {
+            console.error(e);
+            setGlobalError(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        getData();
+    }, [getData]);
 
     useEffect(() => {
         if (selectedLanguage === Languages.EN) {
@@ -104,6 +143,9 @@ export const Home = () => {
                         </FlexImage>
                     </Column>
                     <Form
+                        inStock={inStock}
+                        deliveryPrice={deliveryPrice}
+                        pricePerBox={pricePerBox}
                         setPopupError={setPopupError}
                         submitted={submitted}
                         setSubmitted={setSubmitted}
@@ -133,7 +175,7 @@ export const Home = () => {
                     />
                 </Content>
                 <Popup
-                    soldOut={soldOut}
+                    inStock={inStock}
                     popupError={popupError}
                     amount={parseInt(amount)}
                     delivery={delivery}

@@ -1,3 +1,5 @@
+import { Languages } from './components';
+
 export const primaryColor = '#511c1f';
 export const secondaryColor = '#a41e21';
 
@@ -31,7 +33,21 @@ export const validateEmail = (email: string) => {
     return re.test(String(email).toLowerCase());
 };
 
-export const soldOut = false;
+export const getErrorMsg = (
+    selectedLanguage?: Languages,
+    englishText?: string,
+    malteseText?: string
+) => {
+    if (selectedLanguage === Languages.EN) {
+        return englishText || 'Required';
+    } else if (selectedLanguage === Languages.MT) {
+        return malteseText || 'Insejt din';
+    } else {
+        return '';
+    }
+};
+
+// export const soldOut = false;
 
 // //TODO to remove
 // export const createPaypalOrder = async (amount: number, delivery: boolean) => {

@@ -20,6 +20,12 @@ export const orderEmail = async (orderData: OrderData) => {
     });
 };
 
+export const saveEmail = async (orderData: OrderData) => {
+    await axiosInstance.post('saveOrder', {
+        orderData: orderData
+    });
+};
+
 export const clientEmail = async (orderData: OrderData) => {
     await axiosInstance.post('clientEmail', {
         orderData: orderData
@@ -36,4 +42,10 @@ export const getPricePerBox = async () => {
     const result = await axiosInstance.get<any>('getPricePerBox');
 
     return parseFloat(result.data.pricePerBox);
+};
+
+export const getStockNumber = async () => {
+    const result = await axiosInstance.get<any>('stockNumber');
+
+    return result.data.inStock;
 };

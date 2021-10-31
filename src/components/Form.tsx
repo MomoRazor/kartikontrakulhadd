@@ -1,8 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3';
 import styled from 'styled-components';
-import { getDeliveryPrice, getPricePerBox } from '../api';
-import { validateEmail } from '../config';
+import { getErrorMsg, validateEmail } from '../config';
 import { useResize } from '../hooks';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
@@ -19,6 +18,9 @@ import Instagram from '../assets/socials-08.png';
 import { TextArea } from './TextArea';
 
 interface IForm {
+    inStock: number;
+    deliveryPrice: number;
+    pricePerBox: number;
     setPopupError: (newError: string) => void;
     setPaymentPopup: (newBoolean: boolean) => void;
     name: string;
@@ -76,62 +78,14 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
     const [errorAddressLine2, setErrorAddressLine2] = useState('');
     const [errorLocalityCode, setErrorLocalityCode] = useState('');
 
-    const [globalError, setGlobalError] = useState(false);
-
     const [generalError, setGeneralError] = useState('');
-
-    const [deliveryPrice, setDeliveryPrice] = useState(0);
-    const [pricePerBox, setPricePerBox] = useState(0);
-
-    const getErrorMsg = useCallback(
-        (englishText?: string, malteseText?: string) => {
-            if (language.selectedLanguage === Languages.EN) {
-                return englishText || 'Required';
-            } else if (language.selectedLanguage === Languages.MT) {
-                return malteseText || 'Insejt din';
-            } else {
-                return '';
-            }
-        },
-        [language.selectedLanguage]
-    );
-
-    useEffect(() => {
-        if (globalError) {
-            setPopupError(
-                getErrorMsg(
-                    "We've hit a snag! Tell us so we can fix it!",
-                    'Inqalat xi nejka! Għidilna ħa nirranġaw malajr!'
-                )
-            );
-        } else {
-            setPopupError('');
-        }
-    }, [getErrorMsg, globalError, setPopupError]);
-
-    const getData = useCallback(async () => {
-        try {
-            const result = await getDeliveryPrice();
-            await setDeliveryPrice(result);
-            const result2 = await getPricePerBox();
-            await setPricePerBox(result2);
-            setGlobalError(false);
-        } catch (e) {
-            console.error(e);
-            setGlobalError(true);
-        }
-    }, []);
-
-    useEffect(() => {
-        getData();
-    }, [getData]);
 
     const totalPrice = () => {
         if (props.delivery) {
             if (props.price !== '') {
                 let newPrice = parseFloat(props.price);
                 if (newPrice > 0) {
-                    return (newPrice + deliveryPrice).toFixed(2);
+                    return (newPrice + props.deliveryPrice).toFixed(2);
                 } else {
                     return props.price;
                 }
@@ -152,6 +106,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
             error = true;
             setGeneralError(
                 getErrorMsg(
+                    language.selectedLanguage,
                     'Recaptcha Failed! Try again later',
                     'Problema bir-Recaptcha! Prova iktar tard!'
                 )
@@ -170,21 +125,21 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
         if (props.name === '') {
             error = true;
-            setErrorName(getErrorMsg());
+            setErrorName(getErrorMsg(language.selectedLanguage));
         } else {
             setErrorName('');
         }
 
         if (props.surname === '') {
             error = true;
-            setErrorSurname(getErrorMsg());
+            setErrorSurname(getErrorMsg(language.selectedLanguage));
         } else {
             setErrorSurname('');
         }
 
         if (props.email === '') {
             error = true;
-            setErrorEmail(getErrorMsg());
+            setErrorEmail(getErrorMsg(language.selectedLanguage));
         } else {
             if (!validateEmail(props.email)) {
                 error = true;
@@ -202,7 +157,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
         if (props.mobileNumber === '') {
             error = true;
-            setErrorMobileNumber(getErrorMsg());
+            setErrorMobileNumber(getErrorMsg(language.selectedLanguage));
         } else {
             if (props.mobileNumber.length < 8) {
                 error = true;
@@ -220,15 +175,25 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
         if (props.amount === '') {
             error = true;
-            setErrorAmount(getErrorMsg());
+            setErrorAmount(getErrorMsg(language.selectedLanguage));
         } else {
-            if (parseFloat(props.amount) <= 0) {
+            const parsedAmount = parseFloat(props.amount);
+            if (parsedAmount <= 0) {
                 error = true;
                 setErrorAmount(
                     language.selectedLanguage === Languages.EN
                         ? 'Invalid Number'
                         : language.selectedLanguage === Languages.MT
                         ? 'Numru Invalidu'
+                        : ''
+                );
+            } else if (parsedAmount > props.inStock) {
+                error = true;
+                setErrorAmount(
+                    language.selectedLanguage === Languages.EN
+                        ? 'Not enough in Stock'
+                        : language.selectedLanguage === Languages.MT
+                        ? 'Ma fadalx biżżejjed kaxxi'
                         : ''
                 );
             } else {
@@ -239,21 +204,21 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
         if (props.delivery) {
             if (props.addressLine1 === '') {
                 error = true;
-                setErrorAddressLine1(getErrorMsg());
+                setErrorAddressLine1(getErrorMsg(language.selectedLanguage));
             } else {
                 setErrorAddressLine1('');
             }
 
             if (props.addressLine2 === '') {
                 error = true;
-                setErrorAddressLine2(getErrorMsg());
+                setErrorAddressLine2(getErrorMsg(language.selectedLanguage));
             } else {
                 setErrorAddressLine2('');
             }
 
             if (props.localityCode === '') {
                 error = true;
-                setErrorLocalityCode(getErrorMsg());
+                setErrorLocalityCode(getErrorMsg(language.selectedLanguage));
             } else {
                 setErrorLocalityCode('');
             }
@@ -261,17 +226,17 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
         return error;
     }, [
-        props.name,
-        props.surname,
-        props.email,
-        props.mobileNumber,
-        props.amount,
-        props.delivery,
+        language.selectedLanguage,
         props.addressLine1,
         props.addressLine2,
+        props.amount,
+        props.delivery,
+        props.email,
+        props.inStock,
         props.localityCode,
-        getErrorMsg,
-        language.selectedLanguage
+        props.mobileNumber,
+        props.name,
+        props.surname
     ]);
 
     useEffect(() => {
@@ -362,7 +327,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                         onChange={(value) => {
                             props.setAmount(value);
                             if (value !== '') {
-                                const totalPrice = pricePerBox * parseInt(value);
+                                const totalPrice = props.pricePerBox * parseInt(value);
                                 if (totalPrice >= 0) {
                                     props.setPrice(totalPrice.toFixed(2));
                                 } else {
@@ -386,8 +351,8 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
-                            malteseText={`Nġibuh aħna? (+€${deliveryPrice})`}
-                            englishText={`Delivery? (+€${deliveryPrice})`}
+                            malteseText={`Nġibuh aħna? (+€${props.deliveryPrice})`}
+                            englishText={`Delivery? (+€${props.deliveryPrice})`}
                         />
                     </Row>
                     <Row justifyContent="space-between">

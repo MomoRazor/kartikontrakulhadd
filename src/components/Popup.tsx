@@ -1,12 +1,6 @@
-import {
-    PayPalScriptProvider
-    // PayPalHostedField,
-    // PayPalHostedFieldsProvider,
-    // PAYPAL_HOSTED_FIELDS_TYPES
-    // usePayPalHostedFields
-} from '@paypal/react-paypal-js';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import styled from 'styled-components';
-import { hexToRgb, primaryColor, secondaryColor } from '../config';
+import { getErrorMsg, hexToRgb, primaryColor, secondaryColor } from '../config';
 import { useResize } from '../hooks';
 import { FlexImage } from './FlexImage';
 import { Spacer } from './Spacer';
@@ -17,11 +11,12 @@ import MobileSoldOut from '../assets/soldoutnew2.png';
 import SoldOut from '../assets/soldoutnew1.png';
 import { Column } from './Column';
 import { Row } from './Row';
-// import { Button } from './Button';
-import { clientEmail, orderEmail } from '../api';
+import { clientEmail, orderEmail, saveEmail } from '../api';
 import { OrderData } from '../types';
 import { PaypalAccountPay } from './PaypalAccountPay';
 import { Hr } from './Hr';
+import { useContext, useState } from 'react';
+import { LanguageContext } from './language';
 
 export interface IPopup {
     popupError: string;
@@ -29,7 +24,7 @@ export interface IPopup {
     delivery: boolean;
     purchase: boolean;
     thankyou: boolean;
-    soldOut: boolean;
+    inStock: number;
     setThankyou: (newBoolean: boolean) => void;
     failedPurchase: boolean;
     setFailedPurchase: (newBoolean: boolean) => void;
@@ -76,40 +71,41 @@ const StyledDiv = styled.div<IStyledDiv>`
 
 export const Popup = (props: IPopup) => {
     const mobile = useResize();
+    const { selectedLanguage } = useContext(LanguageContext);
 
-    // const hostedFields = usePayPalHostedFields();
+    const [afterOrderError, setAfterOrderError] = useState('');
 
-    // const submitPayment = () => {
-    //     sendEmails();
-    // };
-
-    // const [purchaseUnits, setPurchaseUnits] = useState<any[]>([]);
-
-    const sendEmails = () => {
+    const sendEmails = async () => {
         if (props.orderData) {
-            orderEmail(props.orderData);
-            clientEmail(props.orderData);
-            props.clearOrder();
+            try {
+                await orderEmail(props.orderData);
+                await saveEmail(props.orderData);
+                await clientEmail(props.orderData);
+                props.clearOrder();
+            } catch (e) {
+                setAfterOrderError(
+                    getErrorMsg(
+                        selectedLanguage,
+                        "We've had a problem saving you order! Contact us so you can be sure we've got your order!",
+                        'Inqalat xi nejka waqt li konna qed nieħdu l-ordni! Għidilna ħalli tkun ċerti li nafu bik!'
+                    )
+                );
+            }
         }
     };
-
-    // const regen = useCallback(async () => {
-    //     if (props.purchase) {
-    //         setPurchaseUnits(await generatePurchaseUnits(props.amount, props.delivery));
-    //     }
-    // }, [props.amount, props.delivery, props.purchase]);
-
-    // useEffect(() => {
-    //     regen();
-    // }, [regen]);
 
     return props.failedPurchase ||
         props.purchase ||
         props.thankyou ||
-        props.soldOut ||
-        props.popupError !== '' ? (
+        props.inStock <= 0 ||
+        props.popupError !== '' ||
+        afterOrderError !== '' ? (
         <StyledBackground
-            onClick={!props.soldOut && props.popupError === '' ? props.onClose : undefined}
+            onClick={
+                props.inStock > 0 && props.popupError === '' && afterOrderError === ''
+                    ? props.onClose
+                    : undefined
+            }
         >
             <StyledDiv
                 maxWidth={mobile ? '200px' : undefined}
@@ -134,61 +130,6 @@ export const Popup = (props: IPopup) => {
                                 setThankyou={props.setThankyou}
                             />
                         </PayPalScriptProvider>
-                        {/* <Spacer />
-                        <Row justifyContent="space-around">
-                            <Column width="40%">
-                                <Hr />
-                            </Column>
-                            <Column width="40%" justifyContent="center" alignItems="center">
-                                <Typography englishText="OR" malteseText="JEW" />
-                            </Column>
-                            <Column width="40%">
-                                <Hr />
-                            </Column>
-                        </Row>
-                        <Spacer /> */}
-                        {/* <PayPalScriptProvider
-                            // TODO get actual data-client-token
-                            options={{
-                                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string,
-                                'data-client-token': '',
-                                components: 'hosted-fields'
-                            }}
-                        >
-                            <PayPalHostedFieldsProvider
-                                createOrder={async () => {
-                                    const result = await axiosInstance.post<any>(
-                                        'createPaypalOrder'
-                                    );
-                                    return result.data.order;
-                                }}
-                            >
-                                <PayPalHostedField
-                                    id="card-number"
-                                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
-                                    options={{ selector: '#card-number' }}
-                                />
-                                <PayPalHostedField
-                                    id="cvv"
-                                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
-                                    options={{ selector: '#card-number' }}
-                                />
-                                <PayPalHostedField
-                                    id="expiration-date"
-                                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
-                                    options={{
-                                        selector: '#expiration-date',
-                                        placeholder: 'MM/YY'
-                                    }}
-                                />
-                                <Spacer />
-                                <Button
-                                    onClick={submitPayment}
-                                    englishText="Confirm Payment"
-                                    malteseText="Ikkonferma l-hlas"
-                                />
-                            </PayPalHostedFieldsProvider>
-                        </PayPalScriptProvider> */}
                     </>
                 ) : props.thankyou ? (
                     <>
@@ -264,7 +205,7 @@ export const Popup = (props: IPopup) => {
                     <>
                         <Typography>ERROR!</Typography>
                     </>
-                ) : props.soldOut ? (
+                ) : props.inStock <= 0 ? (
                     <>
                         {mobile ? (
                             <Column
@@ -321,12 +262,12 @@ export const Popup = (props: IPopup) => {
                             </>
                         )}
                     </>
-                ) : props.popupError !== '' ? (
+                ) : props.popupError !== '' || afterOrderError !== '' ? (
                     <>
                         <Spacer height="40px" />
                         <Row justifyContent="space-around">
                             <Typography fontSize="23px" textAlign="center">
-                                {props.popupError}
+                                {props.popupError || afterOrderError}
                             </Typography>
                         </Row>
                         <Spacer height="40px" />
