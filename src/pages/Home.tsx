@@ -47,7 +47,7 @@ export const Home = () => {
 
     const [deliveryPrice, setDeliveryPrice] = useState(0);
     const [pricePerBox, setPricePerBox] = useState(0);
-    const [inStock, setInStock] = useState(0);
+    const [inStock, setInStock] = useState(1);
     const [globalError, setGlobalError] = useState(false);
 
     useEffect(() => {

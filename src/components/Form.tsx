@@ -470,6 +470,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     width="30px"
                     to="https://www.instagram.com/kartikontrakulhaddofficial"
                     src={Instagram}
+                    newTab
                 />
                 <Spacer width="20px" />
                 <FlexImage
@@ -477,6 +478,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     width="30px"
                     to="https://www.facebook.com/kartikontrakulhadd"
                     src={Facebook}
+                    newTab
                 />
             </Row>
             <Spacer height="40px" />

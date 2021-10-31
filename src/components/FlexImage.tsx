@@ -5,6 +5,7 @@ export interface IFlexImage extends IStyledDiv {
     src: any;
     alt: string;
     children?: ReactNode;
+    newTab?: boolean;
 }
 
 interface IStyledDiv {
@@ -48,7 +49,13 @@ export const FlexImage = ({ src, alt, ...props }: IFlexImage) => {
 
     return (
         <StyledDiv {...props}>
-            {props.to ? <a href={props.to}>{restOfStuff()}</a> : restOfStuff()}
+            {props.to ? (
+                <a href={props.to} target={props.newTab ? '_blank' : undefined} rel="noreferrer">
+                    {restOfStuff()}
+                </a>
+            ) : (
+                restOfStuff()
+            )}
         </StyledDiv>
     );
 };
