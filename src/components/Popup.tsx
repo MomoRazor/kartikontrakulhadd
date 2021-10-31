@@ -7,6 +7,7 @@ import { Spacer } from './Spacer';
 import { Typography } from './Typography';
 import TitlePNG from '../assets/title.png';
 import BrokenHeart from '../assets/soldout-11.png';
+import Heart from '../assets/success-06.png';
 import MobileSoldOut from '../assets/soldoutnew2.png';
 import SoldOut from '../assets/soldoutnew1.png';
 import { Column } from './Column';
@@ -20,9 +21,8 @@ import { LanguageContext } from './language';
 
 export interface IPopup {
     popupError: string;
-    amount: number;
-    delivery: boolean;
     purchase: boolean;
+    setPurchase: (newBoolean: boolean) => void;
     thankyou: boolean;
     inStock: number;
     setThankyou: (newBoolean: boolean) => void;
@@ -30,7 +30,7 @@ export interface IPopup {
     setFailedPurchase: (newBoolean: boolean) => void;
     onClose: () => void;
     clearOrder: () => void;
-    orderData?: OrderData;
+    orderData: OrderData;
 }
 
 const StyledBackground = styled.div`
@@ -81,6 +81,8 @@ export const Popup = (props: IPopup) => {
                 await orderEmail(props.orderData);
                 await saveEmail(props.orderData);
                 await clientEmail(props.orderData);
+                props.setPurchase(false);
+                props.setThankyou(true);
                 props.clearOrder();
             } catch (e) {
                 setAfterOrderError(
@@ -108,7 +110,7 @@ export const Popup = (props: IPopup) => {
             }
         >
             <StyledDiv
-                maxWidth={mobile ? '200px' : undefined}
+                maxWidth={mobile && !props.purchase ? '200px' : undefined}
                 width={mobile ? '80%' : '40%'}
                 height={mobile ? '300px' : ''}
                 onClick={(e) => e.stopPropagation()}
@@ -124,11 +126,8 @@ export const Popup = (props: IPopup) => {
                         >
                             <PaypalAccountPay
                                 sendEmails={sendEmails}
-                                amount={props.amount}
-                                delivery={props.delivery}
-                                onClose={props.onClose}
                                 setFailedPurchase={props.setFailedPurchase}
-                                setThankyou={props.setThankyou}
+                                orderData={props.orderData}
                             />
                         </PayPalScriptProvider>
                     </>
@@ -161,9 +160,11 @@ export const Popup = (props: IPopup) => {
                                     <Row justifyContent="flex-end">
                                         <Typography
                                             fontSize="18px"
-                                            malteseText="Grazzi ħafna ❤"
-                                            englishText="Thanks a lot ❤"
+                                            malteseText="Grazzi ħafna"
+                                            englishText="Thanks a lot"
                                         />
+                                        <Spacer width="10px" />
+                                        <FlexImage src={Heart} width="15px" alt="Heart" />
                                     </Row>
                                 </Column>
                             </Column>
@@ -184,12 +185,16 @@ export const Popup = (props: IPopup) => {
                                             malteseText="qed tiġi proċessata!"
                                             englishText="is being processed"
                                         />
-                                        <Typography
-                                            fontSize="23px"
-                                            textAlign="end"
-                                            malteseText="Grazzi ħafna ❤"
-                                            englishText="Thanks a lot ❤"
-                                        />
+                                        <Row>
+                                            <Typography
+                                                fontSize="23px"
+                                                textAlign="end"
+                                                malteseText="Grazzi ħafna"
+                                                englishText="Thanks a lot"
+                                            />
+                                            <Spacer width="10px" />
+                                            <FlexImage src={Heart} width="15px" alt="Heart" />
+                                        </Row>
                                     </Column>
                                     <FlexImage
                                         alt="Title"

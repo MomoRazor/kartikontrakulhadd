@@ -29,7 +29,8 @@ export const Home = () => {
 
     const [addressLine1, setAddressLine1] = useState('');
     const [addressLine2, setAddressLine2] = useState('');
-    const [localityCode, setLocalityCode] = useState('');
+    const [locality, setLocality] = useState('');
+    const [postCode, setPostCode] = useState('');
     const [deliveryNote, setDeliveryNote] = useState('');
 
     const mobile = useResize();
@@ -71,6 +72,7 @@ export const Home = () => {
             const result2 = await getPricePerBox();
             await setPricePerBox(result2);
             const result3 = await getStockNumber();
+            console.log(result3);
             await setInStock(result3);
             setGlobalError(false);
         } catch (e) {
@@ -111,7 +113,8 @@ export const Home = () => {
         setDelivery(true);
         setAddressLine1('');
         setAddressLine2('');
-        setLocalityCode('');
+        setLocality('');
+        setPostCode('');
         setDeliveryNote('');
         setPrice('0.00');
     };
@@ -127,7 +130,7 @@ export const Home = () => {
                             src={Image}
                             width="65vw"
                             minWidth="600px"
-                            margin={mobile ? '0 0 0 40px' : '0'}
+                            margin={mobile ? '0 0 0 20px' : '0'}
                             alt="Main Image"
                         >
                             <FlexImage
@@ -167,8 +170,10 @@ export const Home = () => {
                         setAddressLine1={setAddressLine1}
                         addressLine2={addressLine2}
                         setAddressLine2={setAddressLine2}
-                        localityCode={localityCode}
-                        setLocalityCode={setLocalityCode}
+                        locality={locality}
+                        setLocality={setLocality}
+                        postCode={postCode}
+                        setPostCode={setPostCode}
                         deliveryNote={deliveryNote}
                         setDeliveryNote={setDeliveryNote}
                         setPaymentPopup={setPaymentPopup}
@@ -177,9 +182,8 @@ export const Home = () => {
                 <Popup
                     inStock={inStock}
                     popupError={popupError}
-                    amount={parseInt(amount)}
-                    delivery={delivery}
                     purchase={paymentPopup}
+                    setPurchase={setPaymentPopup}
                     thankyou={thankyouPopup}
                     setThankyou={setThankyouPopup}
                     failedPurchase={failedPurchase}
@@ -195,7 +199,8 @@ export const Home = () => {
                         delivery,
                         addressLine1,
                         addressLine2,
-                        localityCode,
+                        locality,
+                        postCode,
                         deliveryNote
                     }}
                 />

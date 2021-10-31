@@ -39,8 +39,10 @@ interface IForm {
     setAddressLine1: (newString: string) => void;
     addressLine2: string;
     setAddressLine2: (newString: string) => void;
-    localityCode: string;
-    setLocalityCode: (newString: string) => void;
+    locality: string;
+    setLocality: (newString: string) => void;
+    postCode: string;
+    setPostCode: (newString: string) => void;
     deliveryNote: string;
     setDeliveryNote: (newString: string) => void;
     price: string;
@@ -76,7 +78,8 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
     const [errorAddressLine1, setErrorAddressLine1] = useState('');
     const [errorAddressLine2, setErrorAddressLine2] = useState('');
-    const [errorLocalityCode, setErrorLocalityCode] = useState('');
+    const [errorLocality, setErrorLocality] = useState('');
+    const [errorPostCode, setErrorPostCode] = useState('');
 
     const [generalError, setGeneralError] = useState('');
 
@@ -216,11 +219,18 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                 setErrorAddressLine2('');
             }
 
-            if (props.localityCode === '') {
+            if (props.locality === '') {
                 error = true;
-                setErrorLocalityCode(getErrorMsg(language.selectedLanguage));
+                setErrorLocality(getErrorMsg(language.selectedLanguage));
             } else {
-                setErrorLocalityCode('');
+                setErrorLocality('');
+            }
+
+            if (props.postCode === '') {
+                error = true;
+                setErrorPostCode(getErrorMsg(language.selectedLanguage));
+            } else {
+                setErrorPostCode('');
             }
         }
 
@@ -233,9 +243,10 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
         props.delivery,
         props.email,
         props.inStock,
-        props.localityCode,
+        props.locality,
         props.mobileNumber,
         props.name,
+        props.postCode,
         props.surname
     ]);
 
@@ -256,7 +267,8 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
         setErrorAddressLine1('');
         setErrorAddressLine2('');
-        setErrorLocalityCode('');
+        setErrorLocality('');
+        setErrorPostCode('');
     };
 
     return (
@@ -412,13 +424,24 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                         placeholderEn="Address line 2"
                     />
                     <Spacer height="10px" />
-                    <Input
-                        error={errorLocalityCode}
-                        value={props.localityCode}
-                        onChange={props.setLocalityCode}
-                        placeholderEn="Locality / Post Code"
-                        placeholderMt="Lokalita' / Kodiċi Postali"
-                    />
+                    <Row justifyContent="space-between">
+                        <Input
+                            width="40%"
+                            error={errorLocality}
+                            value={props.locality}
+                            onChange={props.setLocality}
+                            placeholderEn="Locality"
+                            placeholderMt="Lokalita'"
+                        />
+                        <Input
+                            width="40%"
+                            error={errorPostCode}
+                            value={props.postCode}
+                            onChange={props.setPostCode}
+                            placeholderEn="Post Code"
+                            placeholderMt="Kodiċi Postali"
+                        />
+                    </Row>
                     <Spacer height="10px" />
                     <Hr />
                     <Spacer height="15px" />
