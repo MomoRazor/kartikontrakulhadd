@@ -70,18 +70,18 @@ const StyledDiv = styled.div<IStyledDiv>`
     flex-direction: column;
 `;
 
-export const Popup = ({ setPurchase, setThankyou, clearOrder, ...props }: IPopup) => {
+export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...props }: IPopup) => {
     const mobile = useResize();
     const { selectedLanguage } = useContext(LanguageContext);
 
     const [afterOrderError, setAfterOrderError] = useState('');
 
     const sendEmails = useCallback(async () => {
-        if (props.orderData) {
+        if (orderData) {
             try {
-                await orderEmail(props.orderData);
-                await saveEmail(props.orderData);
-                await clientEmail(props.orderData);
+                await orderEmail(orderData);
+                await saveEmail(orderData);
+                await clientEmail(orderData);
                 setPurchase(false);
                 setThankyou(true);
                 clearOrder();
@@ -96,7 +96,7 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, ...props }: IPopup
                 );
             }
         }
-    }, [clearOrder, props.orderData, selectedLanguage, setPurchase, setThankyou]);
+    }, [clearOrder, orderData, selectedLanguage, setPurchase, setThankyou]);
 
     useEffect(() => {
         sendEmails();
@@ -136,7 +136,7 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, ...props }: IPopup
                                     setPurchase(false);
                                     props.setFailedPurchase(true);
                                 }}
-                                orderData={props.orderData}
+                                orderData={orderData}
                             />
                         </PayPalScriptProvider>
                     </>
