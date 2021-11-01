@@ -37,7 +37,7 @@ export const orderEmail = async (orderData: OrderData) => {
     );
 };
 
-export const saveEmail = async (orderData: OrderData) => {
+export const saveOrder = async (orderData: OrderData) => {
     await axiosInstance.post(
         'saveOrder',
         {
