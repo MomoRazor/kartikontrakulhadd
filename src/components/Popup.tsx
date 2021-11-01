@@ -18,6 +18,7 @@ import { PaypalAccountPay } from './PaypalAccountPay';
 import { Hr } from './Hr';
 import { useContext, useState } from 'react';
 import { LanguageContext } from './language';
+import { REACT_APP_PAYPAL_CLIENT_ID } from '../enviornment';
 
 export interface IPopup {
     popupError: string;
@@ -120,7 +121,7 @@ export const Popup = (props: IPopup) => {
                     <>
                         <PayPalScriptProvider
                             options={{
-                                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as string,
+                                'client-id': REACT_APP_PAYPAL_CLIENT_ID as string,
                                 currency: 'EUR'
                             }}
                         >

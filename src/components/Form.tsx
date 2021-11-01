@@ -16,6 +16,7 @@ import { Typography } from './Typography';
 import Facebook from '../assets/socials-07.png';
 import Instagram from '../assets/socials-08.png';
 import { TextArea } from './TextArea';
+import { NODE_ENV } from '../enviornment';
 
 interface IForm {
     inStock: number;
@@ -68,7 +69,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
     const mobile = useResize();
     const language = useContext(LanguageContext);
 
-    const [verified, setVerified] = useState(process.env.NODE_ENV === 'production' ? false : true);
+    const [verified, setVerified] = useState(NODE_ENV === 'production' ? false : true);
 
     const [errorName, setErrorName] = useState('');
     const [errorSurname, setErrorSurname] = useState('');
@@ -475,7 +476,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                 />
                 <Button onClick={submitPayment} englishText="Checkout" malteseText="Ħallas" />
             </Row>
-            {process.env.NODE_ENV === 'production' ? (
+            {NODE_ENV === 'production' ? (
                 <GoogleReCaptcha
                     onVerify={() => {
                         setVerified(true);

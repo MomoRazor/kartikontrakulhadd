@@ -46,25 +46,3 @@ export const getErrorMsg = (
         return '';
     }
 };
-
-// export const soldOut = false;
-
-// //TODO to remove
-// export const createPaypalOrder = async (amount: number, delivery: boolean) => {
-//     const request = new paypal.orders.OrderCreateRequest();
-
-//     request.prefer('return=representation');
-//     request.requestBody({
-//         intent: 'CAPTURE',
-//         purchase_units: generatePurchaseUnits(amount, delivery)
-//     });
-
-//     let order;
-//     try {
-//         order = await paypalCore.client().execute(request);
-
-//         return order;
-//     } catch (err) {
-//         console.error(err);
-//     }
-// };
