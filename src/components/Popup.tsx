@@ -86,6 +86,7 @@ export const Popup = (props: IPopup) => {
                 props.setThankyou(true);
                 props.clearOrder();
             } catch (e) {
+                props.setPurchase(false);
                 setAfterOrderError(
                     getErrorMsg(
                         selectedLanguage,
@@ -96,6 +97,8 @@ export const Popup = (props: IPopup) => {
             }
         }
     };
+
+    console.log(props.inStock, props.popupError, afterOrderError);
 
     return props.failedPurchase ||
         props.purchase ||
