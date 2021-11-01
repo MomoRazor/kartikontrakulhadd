@@ -86,6 +86,7 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                 setThankyou(true);
                 clearOrder();
             } catch (e) {
+                console.error('Test', e);
                 setPurchase(false);
                 setAfterOrderError(
                     getErrorMsg(
