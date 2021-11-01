@@ -15,7 +15,7 @@ export const generatePurchaseUnits = async (amount: number, delivery?: boolean) 
         },
         {
             headers: {
-                authorization: REACT_APP_KEY as string
+                authorization: REACT_APP_KEY || ''
             }
         }
     );
@@ -31,7 +31,7 @@ export const orderEmail = async (orderData: OrderData) => {
         },
         {
             headers: {
-                authorization: REACT_APP_KEY as string
+                authorization: REACT_APP_KEY || ''
             }
         }
     );
@@ -45,7 +45,7 @@ export const saveEmail = async (orderData: OrderData) => {
         },
         {
             headers: {
-                authorization: REACT_APP_KEY as string
+                authorization: REACT_APP_KEY || ''
             }
         }
     );
@@ -59,7 +59,7 @@ export const clientEmail = async (orderData: OrderData) => {
         },
         {
             headers: {
-                authorization: REACT_APP_KEY as string
+                authorization: REACT_APP_KEY || ''
             }
         }
     );
@@ -68,7 +68,7 @@ export const clientEmail = async (orderData: OrderData) => {
 export const getDeliveryPrice = async () => {
     const result = await axiosInstance.get<any>('getDeliveryPrice', {
         headers: {
-            authorization: REACT_APP_KEY as string
+            authorization: REACT_APP_KEY || ''
         }
     });
 
@@ -78,7 +78,7 @@ export const getDeliveryPrice = async () => {
 export const getPricePerBox = async () => {
     const result = await axiosInstance.get<any>('getPricePerBox', {
         headers: {
-            authorization: REACT_APP_KEY as string
+            authorization: REACT_APP_KEY || ''
         }
     });
 
@@ -88,7 +88,7 @@ export const getPricePerBox = async () => {
 export const getStockNumber = async () => {
     const result = await axiosInstance.get<any>('stockNumber', {
         headers: {
-            authorization: REACT_APP_KEY as string
+            authorization: REACT_APP_KEY || ''
         }
     });
 
