@@ -1,5 +1,4 @@
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { generatePurchaseUnits } from '../api';
 import { primaryColor } from '../config';
@@ -21,10 +20,6 @@ const StyledPayPalButtons = styled(PayPalButtons)`
 
 export const PaypalAccountPay = ({ sendEmails, ...props }: IPaypalAccountPay) => {
     const [{ isResolved }] = usePayPalScriptReducer();
-
-    useEffect(() => {
-        sendEmails();
-    }, [sendEmails]);
 
     return isResolved ? (
         <StyledPayPalButtons

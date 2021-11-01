@@ -16,7 +16,7 @@ import { clientEmail, orderEmail, saveEmail } from '../api';
 import { OrderData } from '../types';
 import { PaypalAccountPay } from './PaypalAccountPay';
 import { Hr } from './Hr';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { LanguageContext } from './language';
 import { REACT_APP_PAYPAL_CLIENT_ID } from '../enviornment';
 
@@ -70,23 +70,23 @@ const StyledDiv = styled.div<IStyledDiv>`
     flex-direction: column;
 `;
 
-export const Popup = (props: IPopup) => {
+export const Popup = ({ setPurchase, setThankyou, clearOrder, ...props }: IPopup) => {
     const mobile = useResize();
     const { selectedLanguage } = useContext(LanguageContext);
 
     const [afterOrderError, setAfterOrderError] = useState('');
 
-    const sendEmails = async () => {
+    const sendEmails = useCallback(async () => {
         if (props.orderData) {
             try {
                 await orderEmail(props.orderData);
                 await saveEmail(props.orderData);
                 await clientEmail(props.orderData);
-                props.setPurchase(false);
-                props.setThankyou(true);
-                props.clearOrder();
+                setPurchase(false);
+                setThankyou(true);
+                clearOrder();
             } catch (e) {
-                props.setPurchase(false);
+                setPurchase(false);
                 setAfterOrderError(
                     getErrorMsg(
                         selectedLanguage,
@@ -96,9 +96,11 @@ export const Popup = (props: IPopup) => {
                 );
             }
         }
-    };
+    }, [clearOrder, props.orderData, selectedLanguage, setPurchase, setThankyou]);
 
-    console.log(props.inStock, props.popupError, afterOrderError);
+    useEffect(() => {
+        sendEmails();
+    }, [sendEmails]);
 
     return props.failedPurchase ||
         props.purchase ||
@@ -131,7 +133,7 @@ export const Popup = (props: IPopup) => {
                             <PaypalAccountPay
                                 sendEmails={sendEmails}
                                 onFailedPayment={() => {
-                                    props.setPurchase(false);
+                                    setPurchase(false);
                                     props.setFailedPurchase(true);
                                 }}
                                 orderData={props.orderData}
