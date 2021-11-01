@@ -12,7 +12,7 @@ import MobileSoldOut from '../assets/soldoutnew2.png';
 import SoldOut from '../assets/soldoutnew1.png';
 import { Column } from './Column';
 import { Row } from './Row';
-import { clientEmail, orderEmail, saveOrder } from '../api';
+import { clientEmail } from '../api';
 import { OrderData } from '../types';
 import { PaypalAccountPay } from './PaypalAccountPay';
 import { Hr } from './Hr';
