@@ -12,7 +12,7 @@ import MobileSoldOut from '../assets/soldoutnew2.png';
 import SoldOut from '../assets/soldoutnew1.png';
 import { Column } from './Column';
 import { Row } from './Row';
-import { clientEmail } from '../api';
+import { clientEmail, orderEmail, saveOrder } from '../api';
 import { OrderData } from '../types';
 import { PaypalAccountPay } from './PaypalAccountPay';
 import { Hr } from './Hr';
@@ -79,8 +79,8 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
     const sendEmails = useCallback(async () => {
         if (orderData) {
             try {
-                // await orderEmail(orderData);
-                // await saveOrder(orderData);
+                await orderEmail(orderData);
+                await saveOrder(orderData);
                 await clientEmail(orderData);
                 setPurchase(false);
                 setThankyou(true);
@@ -98,11 +98,12 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
         }
     }, [clearOrder, orderData, selectedLanguage, setPurchase, setThankyou]);
 
+    //TODO to remove
     useEffect(() => {
-        if (orderData.email) {
+        if (props.purchase) {
             sendEmails();
         }
-    }, [orderData.email, sendEmails]);
+    }, [props.purchase, sendEmails]);
 
     return props.failedPurchase ||
         props.purchase ||
