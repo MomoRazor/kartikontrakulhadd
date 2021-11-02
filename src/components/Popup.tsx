@@ -16,7 +16,7 @@ import { clientEmail, orderEmail, saveOrder } from '../api';
 import { OrderData } from '../types';
 import { PaypalAccountPay } from './PaypalAccountPay';
 import { Hr } from './Hr';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { LanguageContext } from './language';
 import { REACT_APP_PAYPAL_CLIENT_ID } from '../enviornment';
 
@@ -98,13 +98,6 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
             }
         }
     }, [clearOrder, orderData, selectedLanguage, setPurchase, setThankyou]);
-
-    //TODO to remove
-    useEffect(() => {
-        if (props.purchase) {
-            sendEmails();
-        }
-    }, [props.purchase, sendEmails]);
 
     return props.failedPurchase ||
         props.purchase ||
