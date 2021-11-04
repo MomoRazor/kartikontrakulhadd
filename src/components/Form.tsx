@@ -274,7 +274,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
 
     return (
         <StyledForm mobile={mobile}>
-            <Typography fontSize="20px" englishText="Hey you." malteseText="Haw' int." />
+            <Typography fontSize="20px" englishText="Hey you." malteseText="Aw int." />
             <Typography
                 fontSize="20px"
                 englishText="Heard you want Karti Kontra Kulħadd."
@@ -364,13 +364,13 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     <Row justifyContent="space-between">
                         <Typography
                             fontSize="20px"
-                            malteseText={`Nġibuh aħna? (+€${props.deliveryPrice})`}
+                            malteseText={`Inġibuh aħna? (+€${props.deliveryPrice})`}
                             englishText={`Delivery? (+€${props.deliveryPrice})`}
                         />
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="Jekk tagħżel din, il-logħba ħa tassallek fi żmien ftit jiem. Il-konsenni is-soltu niproċessawhom matul il-ġimgħa filgħaxija jew is-Sibt filgħodu. Aħna nżommukom infurmati bil-WhatsApp."
+                            malteseText="Jekk tagħżel hekk, il-logħba ħa tasallek fi żmien ftit jiem. Il-konsenji s-soltu nipproċessawhom matul il-ġimgħa filgħaxija jew is-Sibt filgħodu. Aħna nżommukom infurmati fuq WhatsApp."
                             englishText="Ordering with delivery means the game will come to you in a matter of days. Deliveries are usually processed on weekday evenings or Saturday mornings. We will keep you updated via WhatsApp."
                         />
                     </Row>
@@ -396,7 +396,7 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
-                            malteseText="Jekk tagħżel din, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi in-Naxxar, l-Imqabba jew is-Siġġiewi) tista' tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp."
+                            malteseText="Jekk tagħżel hekk, il-logħba trid tiġi għaliha int. Meta u fejn (ħafna drabi n-Naxxar, l-Imqabba jew is-Siġġiewi) tista' tiġi ngħidulek aħna fuq il-media soċjali tagħna u anke fuq WhatsApp."
                             englishText="Ordering with pickup means you must pick up the game yourself. Pickup days and locations (usually Naxxar, Mqabba or Siġġiewi) will be communicated in advance on our socials and via WhatsApp."
                         />
                     </Row>
