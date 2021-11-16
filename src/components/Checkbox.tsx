@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import X from '../assets/X.png';
+import X from '../assets/x.png';
 import { primaryColor } from '../config';
 import { FlexImage } from './FlexImage';
 
