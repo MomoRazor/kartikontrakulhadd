@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 export interface IRow {
     justifyContent?: string;
+    width?: string;
     children: ReactNode;
 }
 
@@ -11,7 +12,7 @@ const StyledDiv = styled.div<IRow>`
     flex-direction: row;
     justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : '')};
     align-items: center;
-    width: 100%;
+    width: ${({ width }) => (width ? width : '100%')};
 `;
 
 export const Row = (props: IRow) => <StyledDiv {...props} />;

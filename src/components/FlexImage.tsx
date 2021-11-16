@@ -8,9 +8,8 @@ export interface IFlexImage extends IStyledDiv {
     newTab?: boolean;
 }
 
-interface IStyledDiv {
+interface IStyledDiv extends IStyledImage {
     to?: string;
-    width?: string;
     minWidth?: string;
     maxWidth?: string;
     padding?: string;
@@ -24,6 +23,8 @@ interface IStyledDiv {
 const StyledDiv = styled.div<IStyledDiv>`
     display: flex;
     width: ${({ width }) => width};
+    height: ${({ height }) => height};
+    border-radius: ${({ borderRadius }) => borderRadius};
     max-width: ${({ maxWidth }) => maxWidth};
     min-width: ${({ minWidth }) => minWidth};
     padding: ${({ padding }) => padding};
@@ -35,14 +36,28 @@ const StyledDiv = styled.div<IStyledDiv>`
     justify-content: center;
 `;
 
-const StyledImage = styled.img`
-    width: 100%;
+interface IStyledImage {
+    width?: string;
+    height?: string;
+    borderRadius?: string;
+}
+
+const StyledImage = styled.img<IStyledImage>`
+    width: ${({ width }) => (width ? '100%' : undefined)};
+    height: ${({ height }) => (height ? '100%' : undefined)};
+    border-radius: ${({ borderRadius }) => borderRadius};
 `;
 
 export const FlexImage = ({ src, alt, ...props }: IFlexImage) => {
     const restOfStuff = () => (
         <>
-            <StyledImage src={src} alt={alt} />
+            <StyledImage
+                borderRadius={props.borderRadius}
+                src={src}
+                alt={alt}
+                width={props.width}
+                height={props.height}
+            />
             {props.children}
         </>
     );
@@ -50,7 +65,12 @@ export const FlexImage = ({ src, alt, ...props }: IFlexImage) => {
     return (
         <StyledDiv {...props}>
             {props.to ? (
-                <a href={props.to} target={props.newTab ? '_blank' : undefined} rel="noreferrer">
+                <a
+                    href={props.to}
+                    target={props.newTab ? '_blank' : undefined}
+                    rel="noreferrer"
+                    style={{ textDecoration: 'none' }}
+                >
                     {restOfStuff()}
                 </a>
             ) : (

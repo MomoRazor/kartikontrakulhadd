@@ -15,6 +15,7 @@ import { Spacer } from './Spacer';
 import { Typography } from './Typography';
 import Facebook from '../assets/socials-07.png';
 import Instagram from '../assets/socials-08.png';
+import AppBros from '../assets/appbros.png';
 import { TextArea } from './TextArea';
 import { NODE_ENV } from '../enviornment';
 
@@ -497,22 +498,33 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
             <Spacer height="10px" />
             <Hr />
             <Spacer height="20px" />
-            <Row justifyContent="flex-end">
-                <FlexImage
-                    alt="FacebookImg"
-                    width="30px"
-                    to="https://www.instagram.com/kartikontrakulhaddofficial"
-                    src={Instagram}
-                    newTab
-                />
-                <Spacer width="20px" />
-                <FlexImage
-                    alt="InstagramImg"
-                    width="30px"
-                    to="https://www.facebook.com/kartikontrakulhadd"
-                    src={Facebook}
-                    newTab
-                />
+            <Row justifyContent="space-between">
+                <Row width="fit-content">
+                    <FlexImage
+                        alt="FacebookImg"
+                        height="35px"
+                        to="https://www.instagram.com/kartikontrakulhaddofficial"
+                        src={Instagram}
+                        newTab
+                    />
+                    <Spacer width="20px" />
+                    <FlexImage
+                        alt="InstagramImg"
+                        height="35px"
+                        to="https://www.facebook.com/kartikontrakulhadd"
+                        src={Facebook}
+                        newTab
+                    />
+                </Row>
+                <Row justifyContent="flex-end">
+                    <Typography
+                        englishText="Website cobbled together by"
+                        malteseText="Website żżomm bil-bżieq ta'"
+                        textAlign="right"
+                    />
+                    <Spacer width="15px" />
+                    <FlexImage alt="AppBros" height="40px" src={AppBros} />
+                </Row>
             </Row>
             <Spacer height="40px" />
         </StyledForm>

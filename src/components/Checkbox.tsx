@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import X from '../assets/x.png';
+import X from '../assets/X.png';
 import { primaryColor } from '../config';
 import { FlexImage } from './FlexImage';
 
@@ -25,6 +25,10 @@ export const Checkbox = (props: ICheckbox) => (
             props.onChange(!props.value);
         }}
     >
-        {props.value ? <FlexImage color={primaryColor} src={X} alt="X!" width="30px" /> : <></>}
+        {props.value ? (
+            <FlexImage color={primaryColor} src={X} alt="X!" width="30px" borderRadius="4px" />
+        ) : (
+            <></>
+        )}
     </StyledBox>
 );
