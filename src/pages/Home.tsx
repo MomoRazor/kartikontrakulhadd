@@ -26,6 +26,7 @@ export const Home = () => {
     const [mobileNumber, setMobileNumber] = useState('');
     const [price, setPrice] = useState('0.00');
     const [delivery, setDelivery] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     const [addressLine1, setAddressLine1] = useState('');
     const [addressLine2, setAddressLine2] = useState('');
@@ -66,6 +67,7 @@ export const Home = () => {
     }, [globalError, selectedLanguage]);
 
     const getData = useCallback(async () => {
+        setLoading(true);
         try {
             const result = await getDeliveryPrice();
             await setDeliveryPrice(result);
@@ -74,9 +76,11 @@ export const Home = () => {
             const result3 = await getStockNumber();
             await setInStock(result3);
             setGlobalError(false);
+            setLoading(false);
         } catch (e) {
             console.error(e);
             setGlobalError(true);
+            setLoading(false);
         }
     }, []);
 
@@ -145,6 +149,7 @@ export const Home = () => {
                         </FlexImage>
                     </Column>
                     <Form
+                        loading={loading}
                         inStock={inStock}
                         deliveryPrice={deliveryPrice}
                         pricePerBox={pricePerBox}

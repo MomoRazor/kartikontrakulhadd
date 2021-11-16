@@ -21,6 +21,7 @@ import { NODE_ENV } from '../enviornment';
 interface IForm {
     inStock: number;
     deliveryPrice: number;
+    loading: boolean;
     pricePerBox: number;
     setPopupError: (newError: string) => void;
     setPaymentPopup: (newBoolean: boolean) => void;
@@ -362,11 +363,15 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                 </Column>
                 <Column width="75%">
                     <Row justifyContent="space-between">
-                        <Typography
-                            fontSize="20px"
-                            malteseText={`Inġibuh aħna? (+€${props.deliveryPrice})`}
-                            englishText={`Delivery? (+€${props.deliveryPrice})`}
-                        />
+                        {props.loading ? (
+                            <Typography>Loading</Typography>
+                        ) : (
+                            <Typography
+                                fontSize="20px"
+                                malteseText={`Inġibuh aħna? (+€${props.deliveryPrice})`}
+                                englishText={`Delivery? (+€${props.deliveryPrice})`}
+                            />
+                        )}
                     </Row>
                     <Row justifyContent="space-between">
                         <Typography
@@ -474,7 +479,11 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     englishText={'Total price: €' + totalPrice()}
                     malteseText={'Ħsara totali: €' + totalPrice()}
                 />
-                <Button onClick={submitPayment} englishText="Checkout" malteseText="Ħallas" />
+                {props.loading ? (
+                    <Typography>Loading</Typography>
+                ) : (
+                    <Button onClick={submitPayment} englishText="Checkout" malteseText="Ħallas" />
+                )}
             </Row>
             {NODE_ENV === 'production' ? (
                 <GoogleReCaptcha
