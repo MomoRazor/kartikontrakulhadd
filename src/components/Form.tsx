@@ -517,11 +517,29 @@ export const Form = ({ setPopupError, ...props }: IForm) => {
                     />
                 </Row>
                 <Row justifyContent="flex-end">
-                    <Typography
-                        englishText="Website cobbled together by"
-                        malteseText="Website żżomm bil-bżieq ta'"
-                        textAlign="right"
-                    />
+                    {mobile ? (
+                        <Column justifyContent="flex-end" alignItems="flex-end">
+                            <Typography
+                                englishText="Website cobbled"
+                                malteseText="Website żżomm"
+                                textAlign="right"
+                                fontSize="11px"
+                            />
+                            <Typography
+                                englishText="together by"
+                                malteseText="bil-bżieq ta'"
+                                textAlign="right"
+                                fontSize="11px"
+                            />
+                        </Column>
+                    ) : (
+                        <Typography
+                            englishText="Website cobbled together by"
+                            malteseText="Website żżomm bil-bżieq ta'"
+                            fontSize="11px"
+                            textAlign="right"
+                        />
+                    )}
                     <Spacer width="15px" />
                     <FlexImage alt="AppBros" height="40px" src={AppBros} />
                 </Row>
