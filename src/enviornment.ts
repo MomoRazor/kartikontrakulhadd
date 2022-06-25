@@ -1,7 +1,3 @@
-import { config } from 'dotenv';
-
-config();
-
 export const {
     PORT,
     REACT_APP_API_URL,

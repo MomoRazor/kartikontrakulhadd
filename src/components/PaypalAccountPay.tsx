@@ -36,6 +36,13 @@ export const PaypalAccountPay = ({ sendEmails, ...props }: IPaypalAccountPay) =>
                         props.orderData.delivery
                     ),
                     payer: {
+                        payer_id: '',
+                        birth_date: '',
+                        tax_info: {
+                            tax_id: '',
+                            tax_id_type: ''
+                        },
+                        tenant: '',
                         name: {
                             given_name: props.orderData.name,
                             surname: props.orderData.surname
@@ -50,7 +57,6 @@ export const PaypalAccountPay = ({ sendEmails, ...props }: IPaypalAccountPay) =>
                             postal_code: props.orderData.postCode
                         },
                         phone: {
-                            // @ts-ignore
                             phone_number: {
                                 national_number: props.orderData.mobileNumber
                             }
@@ -60,7 +66,7 @@ export const PaypalAccountPay = ({ sendEmails, ...props }: IPaypalAccountPay) =>
             }}
             onApprove={async (_, actions) => {
                 try {
-                    await actions.order.capture();
+                    await actions.order?.capture();
                     sendEmails();
                 } catch (e) {
                     props.onFailedPayment();
