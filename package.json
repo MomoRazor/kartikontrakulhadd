@@ -12,22 +12,10 @@
         "styled-components": "5.3.5"
     },
     "scripts": {
-        "start": "react-scripts --max_old_space_size=512 start",
-        "build": "react-scripts --max_old_space_size=512 build",
+        "start": "react-scripts start",
+        "build": "react-scripts build",
         "eject": "react-scripts eject",
         "npm-check": "npm-check -u -E"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
     },
     "devDependencies": {
         "@types/node": "18.7.14",
