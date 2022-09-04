@@ -36,5 +36,8 @@
         "@types/styled-components": "5.1.26",
         "npm-check": "6.0.1",
         "typescript": "4.8.2"
+    },
+    "engines": {
+        "node": "16.17.0"
     }
 }
