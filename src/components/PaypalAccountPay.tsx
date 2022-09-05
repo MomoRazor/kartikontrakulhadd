@@ -30,38 +30,33 @@ export const PaypalAccountPay = ({ sendEmails, ...props }: IPaypalAccountPay) =>
                 tagline: false
             }}
             createOrder={async (_, actions) => {
+                const payer: any = {
+                    name: {
+                        given_name: props.orderData.name,
+                        surname: props.orderData.surname
+                    },
+                    email_address: props.orderData.email,
+                    address: {
+                        address_line_1: props.orderData.addressLine1,
+                        address_line_2: props.orderData.addressLine2,
+                        country_code: 'MT',
+                        admin_area_1: '',
+                        admin_area_2: props.orderData.locality,
+                        postal_code: props.orderData.postCode
+                    },
+                    phone: {
+                        phone_number: {
+                            national_number: props.orderData.mobileNumber
+                        }
+                    }
+                };
+
                 return actions.order.create({
                     purchase_units: await generatePurchaseUnits(
                         props.orderData.amount,
                         props.orderData.delivery
                     ),
-                    payer: {
-                        payer_id: '',
-                        birth_date: '',
-                        tax_info: {
-                            tax_id: '',
-                            tax_id_type: ''
-                        },
-                        tenant: '',
-                        name: {
-                            given_name: props.orderData.name,
-                            surname: props.orderData.surname
-                        },
-                        email_address: props.orderData.email,
-                        address: {
-                            address_line_1: props.orderData.addressLine1,
-                            address_line_2: props.orderData.addressLine2,
-                            country_code: 'MT',
-                            admin_area_1: '',
-                            admin_area_2: props.orderData.locality,
-                            postal_code: props.orderData.postCode
-                        },
-                        phone: {
-                            phone_number: {
-                                national_number: props.orderData.mobileNumber
-                            }
-                        }
-                    }
+                    payer
                 });
             }}
             onApprove={async (_, actions) => {
