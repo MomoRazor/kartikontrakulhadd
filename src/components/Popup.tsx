@@ -79,9 +79,7 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
     const sendEmails = useCallback(async () => {
         if (orderData) {
             try {
-                await orderEmail(orderData);
                 await saveOrder(orderData);
-                await clientEmail(orderData);
                 setPurchase(false);
                 setThankyou(true);
                 clearOrder();

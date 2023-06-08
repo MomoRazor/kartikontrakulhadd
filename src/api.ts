@@ -23,37 +23,9 @@ export const generatePurchaseUnits = async (amount: number, delivery?: boolean) 
     return result.data.purchaseUnits;
 };
 
-export const orderEmail = async (orderData: OrderData) => {
-    await axiosInstance.post(
-        'orderEmail',
-        {
-            orderData: orderData
-        },
-        {
-            headers: {
-                authorization: REACT_APP_KEY || ''
-            }
-        }
-    );
-};
-
 export const saveOrder = async (orderData: OrderData) => {
     await axiosInstance.post(
         'saveOrder',
-        {
-            orderData: orderData
-        },
-        {
-            headers: {
-                authorization: REACT_APP_KEY || ''
-            }
-        }
-    );
-};
-
-export const clientEmail = async (orderData: OrderData) => {
-    await axiosInstance.post(
-        'clientEmail',
         {
             orderData: orderData
         },
