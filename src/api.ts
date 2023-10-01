@@ -27,7 +27,7 @@ export const saveOrder = async (orderData: OrderData) => {
     await axiosInstance.post(
         '/create/orders',
         {
-            orderData: orderData
+            data: orderData
         },
         {
             headers: {
