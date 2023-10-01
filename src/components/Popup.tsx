@@ -121,7 +121,7 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                     <>
                         <PayPalScriptProvider
                             options={{
-                                'client-id': REACT_APP_PAYPAL_CLIENT_ID as string,
+                                clientId: REACT_APP_PAYPAL_CLIENT_ID as string,
                                 currency: 'EUR'
                             }}
                         >
