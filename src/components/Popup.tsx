@@ -15,7 +15,6 @@ import { Row } from './Row';
 import { saveOrder } from '../api';
 import { OrderData } from '../types';
 import { PaypalAccountPay } from './PaypalAccountPay';
-import { Hr } from './Hr';
 import { useCallback, useContext, useState } from 'react';
 import { LanguageContext } from './language';
 import { REACT_APP_PAYPAL_CLIENT_ID } from '../enviornment';
@@ -230,15 +229,21 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                                     width="150px"
                                     padding="10px"
                                 />
-                                <Hr />
+                                <Typography
+                                        fontSize="15px"
+                                        malteseText="...għalissa."
+                                        englishText="...for now."
+                                    />
                                 <Spacer height="20px" />
                                 <Row justifyContent="center">
                                     <FlexImage src={BrokenHeart} width="15px" alt="Break" />
                                     <Spacer width="10px" />
                                     <Typography
+                                        textAlign='center'
+                                        width='80%'
                                         fontSize="15px"
-                                        malteseText="Għal darb' oħra xbin"
-                                        englishText="Better luck next time"
+                                        malteseText="Ibatilna fuq kartikontrakulħadd@gmail.com ħalli naqduk malli jkollna kaxxi"
+                                        englishText="Drop us a line on kartikontrakulħadd@gmail.com so that you'll know as soon as we restock"
                                     />
                                     <Spacer width="10px" />
                                     <FlexImage src={BrokenHeart} width="15px" alt="Break" />
@@ -254,15 +259,21 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                                         width="100%"
                                         padding="20px"
                                     />
-                                    <Hr />
+                                    <Typography
+                                        fontSize="15px"
+                                        malteseText="...għalissa."
+                                        englishText="...for now."
+                                    />
                                     <Spacer height="20px" />
-                                    <Row justifyContent="center">
+                                    <Row justifyContent="center" >
                                         <FlexImage src={BrokenHeart} width="20px" alt="Break" />
                                         <Spacer width="10px" />
                                         <Typography
-                                            fontSize="23px"
-                                            malteseText="Għal darb' oħra xbin"
-                                            englishText="Better luck next time"
+                                            textAlign='center'
+                                            width='80%'
+                                            fontSize="15px"
+                                            malteseText="Ibatilna fuq kartikontrakulħadd@gmail.com ħalli naqduk malli jkollna kaxxi"
+                                            englishText="Drop us a line on kartikontrakulħadd@gmail.com so that you'll know as soon as we restock"
                                         />
                                         <Spacer width="10px" />
                                         <FlexImage src={BrokenHeart} width="20px" alt="Break" />
