@@ -32,5 +32,7 @@ export const useResize = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, [handleResize, isClient]);
 
+    console.log('mobile', mobile);
+
     return mobile;
 };

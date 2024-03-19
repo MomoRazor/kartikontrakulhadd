@@ -46,7 +46,7 @@ const StyledBackground = styled.div`
 `;
 
 interface IStyledDiv {
-    height?: string;
+    minHeight?: string;
     width?: string;
     maxWidth?: string;
     backgroundColor?: string;
@@ -57,7 +57,7 @@ const StyledDiv = styled.div<IStyledDiv>`
     background-color: ${({ backgroundColor }) =>
         backgroundColor ? backgroundColor : secondaryColor};
     width: ${({ width }) => (width ? width : '')};
-    height: ${({ height }) => (height ? height : '')};
+    min-height: ${({ minHeight }) => (minHeight ? minHeight : '')};
     max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : '')};
     border-radius: 20px;
     padding: 20px;
@@ -110,9 +110,8 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
             }
         >
             <StyledDiv
-                maxWidth={mobile && !props.purchase ? '200px' : undefined}
                 width={mobile ? '80%' : '40%'}
-                height={mobile ? '300px' : ''}
+                minHeight="300px"
                 onClick={(e) => e.stopPropagation()}
                 backgroundColor={props.purchase ? 'white' : undefined}
             >
@@ -220,7 +219,7 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                             <Column
                                 justifyContent="center"
                                 alignItems="center"
-                                height="100%"
+                                height="fit-content"
                                 width="100%"
                             >
                                 <FlexImage
@@ -230,17 +229,17 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                                     padding="10px"
                                 />
                                 <Typography
-                                        fontSize="15px"
-                                        malteseText="...għalissa."
-                                        englishText="...for now."
-                                    />
+                                    fontSize="15px"
+                                    malteseText="...għalissa."
+                                    englishText="...for now."
+                                />
                                 <Spacer height="20px" />
                                 <Row justifyContent="center">
                                     <FlexImage src={BrokenHeart} width="15px" alt="Break" />
                                     <Spacer width="10px" />
                                     <Typography
-                                        textAlign='center'
-                                        width='80%'
+                                        textAlign="center"
+                                        width="80%"
                                         fontSize="15px"
                                         malteseText="Ibatilna fuq kartikontrakulħadd@gmail.com ħalli naqduk malli jkollna kaxxi"
                                         englishText="Drop us a line on kartikontrakulħadd@gmail.com so that you'll know as soon as we restock"
@@ -265,12 +264,12 @@ export const Popup = ({ setPurchase, setThankyou, clearOrder, orderData, ...prop
                                         englishText="...for now."
                                     />
                                     <Spacer height="20px" />
-                                    <Row justifyContent="center" >
+                                    <Row justifyContent="center">
                                         <FlexImage src={BrokenHeart} width="20px" alt="Break" />
                                         <Spacer width="10px" />
                                         <Typography
-                                            textAlign='center'
-                                            width='80%'
+                                            textAlign="center"
+                                            width="80%"
                                             fontSize="15px"
                                             malteseText="Ibatilna fuq kartikontrakulħadd@gmail.com ħalli naqduk malli jkollna kaxxi"
                                             englishText="Drop us a line on kartikontrakulħadd@gmail.com so that you'll know as soon as we restock"

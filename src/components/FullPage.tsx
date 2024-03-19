@@ -1,8 +1,10 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { QuadSpinner } from './QuadSpinner';
 
 export interface IFullPage extends IStyledDiv {
     children: ReactNode;
+    loading: boolean;
 }
 
 export interface IStyledDiv {
@@ -20,5 +22,7 @@ const StyledDiv = styled.div<IStyledDiv>`
 `;
 
 export const FullPage = (props: IFullPage) => (
-    <StyledDiv backgroundColor={props.backgroundColor}>{props.children}</StyledDiv>
+    <StyledDiv backgroundColor={props.backgroundColor}>
+        {props.loading ? <QuadSpinner /> : props.children}
+    </StyledDiv>
 );

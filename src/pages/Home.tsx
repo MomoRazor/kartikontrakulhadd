@@ -70,11 +70,11 @@ export const Home = () => {
         setLoading(true);
         try {
             const result = await getDeliveryPrice();
-            await setDeliveryPrice(result);
+            setDeliveryPrice(result);
             const result2 = await getPricePerBox();
-            await setPricePerBox(result2);
+            setPricePerBox(result2);
             const result3 = await getStockNumber();
-            await setInStock(result3);
+            setInStock(result3);
             setGlobalError(false);
             setLoading(false);
         } catch (e) {
@@ -125,7 +125,7 @@ export const Home = () => {
     return (
         <>
             <Fonts />
-            <FullPage backgroundColor={primaryColor}>
+            <FullPage backgroundColor={primaryColor} loading={loading}>
                 <TopBar />
                 <Content>
                     <Column>
@@ -149,7 +149,6 @@ export const Home = () => {
                         </FlexImage>
                     </Column>
                     <Form
-                        loading={loading}
                         inStock={inStock}
                         deliveryPrice={deliveryPrice}
                         pricePerBox={pricePerBox}
