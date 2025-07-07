@@ -56,7 +56,8 @@ export const PaypalAccountPay = ({ sendEmails, ...props }: IPaypalAccountPay) =>
                         props.orderData.amount,
                         props.orderData.delivery
                     ),
-                    payer
+                    payer,
+                    intent: 'CAPTURE'
                 });
             }}
             onApprove={async (_, actions) => {
