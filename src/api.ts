@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { REACT_APP_API_URL, REACT_APP_KEY } from './enviornment';
+import { API_URL, KEY } from './enviornment';
 import { OrderData } from './types';
 
 export const axiosInstance = axios.create({
-    baseURL: REACT_APP_API_URL
+    baseURL: API_URL
 });
 
 export const generatePurchaseUnits = async (amount: number, delivery?: boolean) => {
@@ -15,7 +15,7 @@ export const generatePurchaseUnits = async (amount: number, delivery?: boolean) 
         },
         {
             headers: {
-                authorization: REACT_APP_KEY || ''
+                authorization: KEY || ''
             }
         }
     );
@@ -31,7 +31,7 @@ export const saveOrder = async (orderData: OrderData) => {
         },
         {
             headers: {
-                authorization: REACT_APP_KEY || ''
+                authorization: KEY || ''
             }
         }
     );
@@ -40,7 +40,7 @@ export const saveOrder = async (orderData: OrderData) => {
 export const getDeliveryPrice = async () => {
     const result = await axiosInstance.get<any>('/get/delivery-price', {
         headers: {
-            authorization: REACT_APP_KEY || ''
+            authorization: KEY || ''
         }
     });
 
@@ -50,7 +50,7 @@ export const getDeliveryPrice = async () => {
 export const getPricePerBox = async () => {
     const result = await axiosInstance.get<any>('/get/box-price', {
         headers: {
-            authorization: REACT_APP_KEY || ''
+            authorization: KEY || ''
         }
     });
 
@@ -60,7 +60,7 @@ export const getPricePerBox = async () => {
 export const getStockNumber = async () => {
     const result = await axiosInstance.get<any>('/get/stock-number', {
         headers: {
-            authorization: REACT_APP_KEY || ''
+            authorization: KEY || ''
         }
     });
 
